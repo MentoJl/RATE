@@ -1,0 +1,17 @@
+.categoriesRow {
+    // background-color: pink;
+    display: flex;
+    align-items: center;
+    justify-content: center;  
+    padding-bottom: 20px;  
+} 
+
+.categoriesSpace {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.categoriesTitle {
+    font-style: italic;
+}

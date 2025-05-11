@@ -1,7 +1,23 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  devIndicators: false,
+  async rewrites() {
+    return [
+      {
+        source: "/api/auth/:path*",
+        destination: "/api/auth/:path*",
+      },
+      {
+        source: "/api/:path*",
+        destination: "http://localhost:3001/app/api/:path*",
+      },
+      {
+        source: "/login",
+        destination: "/common/components/loginDashboard",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
