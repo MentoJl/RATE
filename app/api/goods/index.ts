@@ -11,6 +11,8 @@ router.get('/', async (req: Request, res: Response) => {
 })
 
 router.post('/', async (req: Request, res: Response) => {
+  const { name, price } = req.body
+  
   res.json("ok")
 })
 

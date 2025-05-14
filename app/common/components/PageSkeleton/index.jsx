@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 
 const PageSkeleton = () => {
-    const [hide, setHide] = useState(false);
+    const [hide, setHide] = useState(false)
 
     useEffect(() => {
-        document.body.style.overflow = "hidden";
-
-        setHide(true);
-        document.body.style.overflow = "";
-    }, []);
+        setHide(true)
+        document.body.style.overflow = ""
+    }, [])
 
     return (
     <div
@@ -31,6 +29,7 @@ const PageSkeleton = () => {
         <img
         src="/Logo/HeaderLogo1-preview.png"
         style={{
+            marginTop: '-70px',
             width: "300px",
             height: "300px",
             animation: "spin 2s linear infinite",

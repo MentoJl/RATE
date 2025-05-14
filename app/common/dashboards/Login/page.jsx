@@ -13,7 +13,7 @@ const LoginDashboard = () => {
     const response = await signIn('credentials', {
       email: values.email,
       password: values.password,
-      redirect: false,
+      redirect: true,
       callbackUrl: '/'
     })
     console.log('Response:', response)
@@ -43,7 +43,7 @@ const LoginDashboard = () => {
             name="email"
             autoComplete="email"
             size="large"
-            placeholder="Пошта або логін"
+            placeholder="Пошта"
             prefix={<UserOutlined />}
           />
         </Form.Item>

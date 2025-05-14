@@ -15,22 +15,22 @@ const handler = NextAuth({
         await connectToMongo()
         const user = await UsersSchema.findOne({ email: credentials?.email })
         if (!user) throw new Error("Invalid email or username")
-        console.log("pass: ", credentials?.password)
-        console.log("user pass: ", user.password)
 
         if (!credentials?.password === user.password) throw new Error("Invalid password")
 
         return {
           id: user._id.toString(),
-          email: user.email,
-          name: user.name,
-          isAdmin: user?.isAdmin
+          email: user?.email,
+          name: user?.name,
+          password: user.password,
+          role: user?.role
         }
       }
     })
   ],
   session: {
-    strategy: "jwt"
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60,
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -38,7 +38,11 @@ const handler = NextAuth({
       return token
     },
     async session({ session, token }) {
-      session.user = token.user as { name?: string | null; email?: string | null; password?: string | null }
+      if (token?.user) {
+        session.user = {
+          ...token.user,
+        }
+      }
       return session
     }
   },

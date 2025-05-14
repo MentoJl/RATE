@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { Provider } from "react-redux"
+import './global.scss'
 import { store } from './store'
 import '@ant-design/v5-patch-for-react-19'
 import Header from "./common/components/Header"

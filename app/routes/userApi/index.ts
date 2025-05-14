@@ -7,11 +7,37 @@ export const userApi = createApi({
     getUsers: builder.query({
       query: ({ email, password }) => ({
         url: "users",
-        method: "POST",
+        method: "GET",
         body: { email, password },
+      }),
+    }),
+    createUser: builder.mutation({
+      query: ({ email, password, name, role }) => ({
+        url: "users",
+        method: "POST",
+        body: { email, password, name, role },
+      }),
+    }),
+    editUser: builder.mutation({
+      query: ({ _id, email, password, name, role }) => ({
+        url: "users",
+        method: "PATCH",
+        body: { _id, email, password, name, role },
+      }),
+    }),
+    deleteUser: builder.mutation({
+      query: ({ _id }) => ({
+        url: "users",
+        method: "DELETE",
+        body: { _id },
       }),
     }),
   }),
 })
 
-export const { useGetUsersQuery } = userApi
+export const { 
+  useGetUsersQuery, 
+  useCreateUserMutation, 
+  useEditUserMutation, 
+  useDeleteUserMutation,
+} = userApi

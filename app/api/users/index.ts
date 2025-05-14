@@ -10,4 +10,9 @@ router.get('/', async (req: Request, res: Response) => {
   res.json(docs)
 })
 
+router.patch('/', async (req: Request, res: Response) => {
+  const docs = await UsersSchema.find()
+  res.json(docs)
+})
+
 export default router

@@ -7,7 +7,8 @@ import { ReadOutlined,
   ShoppingCartOutlined, 
   HomeOutlined,
   SearchOutlined,
-  UserSwitchOutlined } from '@ant-design/icons'
+  UserSwitchOutlined,
+  UserOutlined } from '@ant-design/icons'
 import { usePathname } from "next/navigation"
 import { Popover, Input, Image } from 'antd'
 import { useRouter } from 'next/navigation'
@@ -32,12 +33,12 @@ const Header = () => {
         return 2
       case '/cart':
         return 3
-      case '/about':
-        return 4
       case '/contact':
-        return 5
+        return 4
       case '/profile':
-        return 6
+        return 5
+      case '/login':
+        return 5
       default:
         return 0
     }
@@ -49,7 +50,7 @@ const Header = () => {
     setPage(tab)
   }
 
-  if (pathname === '/common/dashboards/Login') {
+  if (pathname === '/login') {
     return null
   }
 
@@ -97,7 +98,7 @@ const Header = () => {
             role='navigation'
             centered
             > 
-            <Tab label="Home Page" icon={<HomeOutlined style={{ fontSize: "18px" }} />} iconPosition='start'/>
+            <Tab label="Home Page" icon={<HomeOutlined style={{ fontSize: "18px" }} />} iconPosition='start' href="/"/>
             {/* <Tab icon={<img src="/Logo/Headerlogo.png" alt="home icon" style={{ width: 60, height: 50 }} />} iconPosition='start'/> */}
             <Tab label="Shop" icon={<ShoppingOutlined style={{ fontSize: "20px" }} />} iconPosition='start'/>
             <Popover
@@ -120,7 +121,7 @@ const Header = () => {
             <Tab label="Cart" icon={<ShoppingCartOutlined style={{ fontSize: "20px" }} />} iconPosition='start'/>
             {/* <Tab label='About us' icon={<ReadOutlined style={{ fontSize: "20px" }} />} iconPosition='start' /> */}
             <Tab label='Contact us' icon={<UserSwitchOutlined style={{ fontSize: "20px" }} />} iconPosition='start' />
-            <Tab label={!session ? "Увійти" : "Мій профіль"} href='/common/dashboards/Login'/>
+            <Tab icon={!session ? '' : <UserOutlined style={{ fontSize: "20px" }}/>} iconPosition='start' label={!session ? "Увійти" : "Профіль"} href={!session ? '/login' : '/profile'}/>
           </Tabs>
         </Box>
       </Box>
