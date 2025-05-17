@@ -16,7 +16,6 @@ const LoginDashboard = () => {
       redirect: true,
       callbackUrl: '/'
     })
-    console.log('Response:', response)
 
     if (response?.error) {
       message.error('Невірний логін або пароль')

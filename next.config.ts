@@ -18,7 +18,11 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/profile",
-        destination: "/common/dashboards/ProfilePage",
+        destination: "/common/dashboards/Profile",
+      },
+      {
+        source: "/catalog",
+        destination: "/common/dashboards/Catalog",
       },
     ];
   },

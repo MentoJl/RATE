@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
+import { IGoodsApiRequest, IGoodsApiResponse } from "./goodsApi.api.types"
 
 export const goodsApi = createApi({
   reducerPath: "goodsApi",
@@ -7,7 +8,7 @@ export const goodsApi = createApi({
     getAllGoods: builder.query({
       query: () => "goods",
     }),
-    createGoods: builder.mutation({
+    createGoods: builder.mutation<IGoodsApiResponse, IGoodsApiRequest>({
       query: (newGoods) => ({
         url: "goods",
         method: "POST",

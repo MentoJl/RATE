@@ -13,17 +13,17 @@ app.use(express.json())
 const apiPath = path.resolve(__dirname, '../app/api')
 
 fs.readdirSync(apiPath).forEach((folder) => {
-    const folderPath = path.join(apiPath, folder)
-    if (fs.statSync(folderPath).isDirectory()) {
-        import(folderPath).then((route) => {
-            app.use(`/api/${folder}`, route.default)
-        }).catch((error) => {
-            console.error(`Error server import to folder ${folder}:`, error)
-        })
-    }
+  const folderPath = path.join(apiPath, folder)
+  if (fs.statSync(folderPath).isDirectory()) {
+    import(folderPath).then((route) => {
+      app.use(`/api/${folder}`, route.default)
+      }).catch((error) => {
+        console.error(`Error server import to folder ${folder}:`, error)
+    })
+  }
 })
 
 app.listen(PORT, () => {
-    console.log(`🚀 PORT ${PORT} is running`)
+  console.log(`🚀 PORT ${PORT} is running`)
 })
 

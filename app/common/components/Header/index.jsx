@@ -19,15 +19,16 @@ const Header = () => {
   const router = useRouter()
   const { data: session, status } = useSession()
   const pathname = usePathname()
-  console.log('Session:', session)
   const [searchPopoverIsOpen, setSearchPopoverIsOpen] = useState(false)
   const { Search } = Input
+  const [page, setPage] = useState(getDefaultTabValue())
+  const [isScrolled, setIsScrolled] = useState(false)
 
-  const getDefaultTabValue = () => {
+  function getDefaultTabValue () {
     switch (pathname) {
       case '/':
         return 0
-      case '/shop':
+      case '/catalog':
         return 1
       case '/search':
         return 2
@@ -44,8 +45,6 @@ const Header = () => {
     }
   }
 
-  const [page, setPage] = useState(getDefaultTabValue())
-
   const handleChangeTab = (e, tab) => {
     setPage(tab)
   }
@@ -53,8 +52,6 @@ const Header = () => {
   if (pathname === '/login') {
     return null
   }
-
-  const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -100,7 +97,7 @@ const Header = () => {
             > 
             <Tab label="Home Page" icon={<HomeOutlined style={{ fontSize: "18px" }} />} iconPosition='start' href="/"/>
             {/* <Tab icon={<img src="/Logo/Headerlogo.png" alt="home icon" style={{ width: 60, height: 50 }} />} iconPosition='start'/> */}
-            <Tab label="Shop" icon={<ShoppingOutlined style={{ fontSize: "20px" }} />} iconPosition='start'/>
+            <Tab label="Shop" icon={<ShoppingOutlined style={{ fontSize: "20px" }} />} iconPosition='start' href='/catalog'/>
             <Popover
               content={
               <Search 
