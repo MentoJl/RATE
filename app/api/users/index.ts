@@ -35,4 +35,20 @@ router.patch('/', async (req: Request, res: Response) => {
   }
 })
 
+router.delete('/', async (req: Request, res: Response) => {
+  const { _id } = req.body
+
+  if (!_id) {
+    res.status(400).json({ message: 'User ID is required' })
+  }
+
+  const result = await UsersSchema.findOneAndDelete({ _id })
+
+  if (!result) {
+    res.status(404).json({ message: 'Користувач не видалений або не існує' })
+  }
+
+  res.status(200).json({ success: true, message: 'Користувач успішно видалений' })
+})
+
 export default router

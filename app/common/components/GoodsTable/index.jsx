@@ -37,7 +37,7 @@ const GoodsTable = () => {
       justifyContent: "center",
       flexDirection: "column"
     }}>
-      {/* <Grid container spacing={2}>
+      <Grid container spacing={2}>
         {currentItems?.map((item) => (
           <Grid item key={item._id} sx={{ border: "1px solid black", display: "flex", alignItems: "center", justifyContent: "center"}}>
             <Card style={{ height: '400px', width: "300px" }}>
@@ -59,7 +59,7 @@ const GoodsTable = () => {
             </Card>
           </Grid>
         ))}
-      </Grid> */}
+      </Grid>
       fghhfggfhhgff
       <Pagination
         count={Math.ceil(data?.length / itemsPerPage)}

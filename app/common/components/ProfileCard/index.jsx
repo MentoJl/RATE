@@ -1,4 +1,4 @@
-import react, { useEffect, useState, useRef } from 'react'
+import react, { useEffect, useState, useRef, useMemo } from 'react'
 import { Grid } from '@mui/system'
 import { Box, Stack, TextField } from '@mui/material'
 import { useSession, signOut, signIn } from 'next-auth/react'
@@ -57,7 +57,7 @@ const ProfileCard = () => {
     })
   }
 
-  const DropDownMenu = () => {
+  const DropDownMenu = useMemo(() => {
     return {
       items: [
         {
@@ -83,26 +83,26 @@ const ProfileCard = () => {
         },
       ]
     }
-  }
+  }, [session, isEdit])
 
-  const ExtrasMenu = () => {
+  const ExtrasMenu = useMemo(() => {
     return (
       <>
         <Tag color={getRoleTagColor(session?.user?.role)}>{getRoleLabel(session?.user?.role)}</Tag>
-        <Dropdown menu={DropDownMenu()} placement="bottomRight">
+        <Dropdown menu={DropDownMenu} placement="bottomRight">
           <Button>
             • • •
           </Button>
         </Dropdown>
       </>
     )
-  }
+  }, [session, isEdit])
 
   return (
     <Card
       title="ЗАГАЛЬНА ІНФОРМАЦІЯ"
       hoverable
-      extra={ExtrasMenu()}
+      extra={ExtrasMenu}
       style={{
         width: "100%",
       }}

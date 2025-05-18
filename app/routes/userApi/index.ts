@@ -1,14 +1,15 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
+import { IDeleteUserApiRequest, IUserApiRequest, IUserApiResponse } from "./usersApi.api.types"
 
 export const userApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3001/api/" }),
   endpoints: (builder) => ({
-    getUsers: builder.query({
-      query: ({ email, password }) => ({
+    getUsers: builder.query<IUserApiResponse, IUserApiRequest>({
+      query: ({ _id, name, email, password, role }) => ({
         url: "users",
         method: "GET",
-        body: { email, password },
+        params: { _id, name, email, password, role },
       }),
     }),
     createUser: builder.mutation({
@@ -25,7 +26,7 @@ export const userApi = createApi({
         body: { _id, email, password, name, role },
       }),
     }),
-    deleteUser: builder.mutation({
+    deleteUser: builder.mutation<IUserApiResponse, IDeleteUserApiRequest>({
       query: ({ _id }) => ({
         url: "users",
         method: "DELETE",

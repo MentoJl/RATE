@@ -3,6 +3,8 @@
 import { Grid } from '@mui/system'
 import { Stack } from '@mui/material'
 import ProfileCard from '@/app/common/components/ProfileCard'
+import UsersCard from '@/app/common/components/UsersCard'
+import CartCard from '@/app/common/components/CartCard'
 
 const ProfilePage = () => {
 
@@ -19,11 +21,11 @@ const ProfilePage = () => {
         <Grid size={8}>
           <Stack spacing={2}>
             <ProfileCard/>
-            <ProfileCard/>
+            <UsersCard/>
           </Stack>
         </Grid>
         <Grid size={4}>
-            <ProfileCard/>
+            <CartCard/>
           </Grid>
       </Grid>
     </Stack>
