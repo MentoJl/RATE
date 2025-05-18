@@ -33,8 +33,7 @@
     "app/**/*.ts",
     "next-env.d.ts",
     "server/**/*.ts",
-    ".next/types/**/*.ts"
-, "utils/getUserTableColumns.tsx"  ],
+    ".next/types/**/*.ts"],
   "exclude": [
     "node_modules"
   ]
