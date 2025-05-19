@@ -30,27 +30,55 @@ const GoodsTable = () => {
 
   return (
     <Box sx={{ 
-      width: "95%",
-      border: "1px solid black",
+      width: "90%",
+      // border: "1px solid black",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
       flexDirection: "column"
     }}>
-      <Grid container spacing={2}>
+      <Grid container spacing={3} justifyContent="center">
         {currentItems?.map((item) => (
-          <Grid item key={item._id} sx={{ border: "1px solid black", display: "flex", alignItems: "center", justifyContent: "center"}}>
-            <Card style={{ height: '400px', width: "300px" }}>
-              <CardContent style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                <Image src={item.image} width={200} height={200} preview={false} />
-                <Typography variant="h6">{item.title}</Typography>
-                <Typography variant="body2" sx={{ fontWeight: 'bold', cursor: 'pointer' }}>{item.category}</Typography>
+          <Grid item key={item._id}>
+            <Card sx={{ width: 280, height: 420 }}>
+              <CardContent
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  height: '100%',
+                  gap: 2.5,
+                }}
+              >
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  width={200}
+                  height={200}
+                  preview={false}
+                  style={{ borderRadius: '10px' }}
+                />
+                <Typography variant="h6" align="center">
+                  {item.title}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ fontWeight: 'bold' }}
+                >
+                  {item.category}
+                </Typography>
                 <Box>
                   {item.tags.map((tag, index) => (
-                    <Chip key={index} label={tag} style={{ margin: '5px', cursor: 'pointer' }} />
+                    <Chip
+                      key={index}
+                      label={tag}
+                      size="small"
+                      sx={{ marginInline: 0.5 }}
+                    />
                   ))}
                 </Box>
-                <Stack direction="row" spacing={1} alignItems="center">
+                <Stack direction="row" alignItems="center">
                   <Typography variant="h6" fontWeight="bold">
                     {item.price} {item.priceType}
                   </Typography>
@@ -60,7 +88,6 @@ const GoodsTable = () => {
           </Grid>
         ))}
       </Grid>
-      fghhfggfhhgff
       <Pagination
         count={Math.ceil(data?.length / itemsPerPage)}
         page={currentPage}
