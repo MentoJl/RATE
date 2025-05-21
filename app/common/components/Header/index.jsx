@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import Tabs from '@mui/material/Tabs'
-import Tab from '@mui/material/Tab'
-import Box from '@mui/material/Box'
-import { ReadOutlined, 
+import { useMediaQuery, Tabs, Tab, Box } from '@mui/material'
+import { 
+  ReadOutlined, 
   ShoppingOutlined, 
   ShoppingCartOutlined, 
   HomeOutlined,
@@ -68,15 +67,29 @@ const Header = () => {
       preview={false} 
       src='/Logo/HeaderLogo1-preview.png' 
       style={{
-        width: '75px', 
-        height: '70px', 
-        top: 0, 
+        width: useMediaQuery('(min-width:1001px)') ? '75px' : '48px', 
+        height: useMediaQuery('(min-width:1001px)') ? '70px' : '45px', 
+        top: useMediaQuery('(min-width:1001px)') ? 0 : 2, 
         position: 'fixed', 
         zIndex: 900,
-        cursor: 'pointer'
+        cursor: 'pointer',
       }} 
       onClick={() => router.push('/')}
       />
+      {useMediaQuery('(min-width:1101px)') && <Image 
+      preview={false} 
+      src='/Logo/siteName.png' 
+      style={{
+        width: '73px', 
+        height: '25px', 
+        top: 24,
+        left: 75,
+        position: 'fixed', 
+        zIndex: 900,
+        cursor: 'pointer',
+      }} 
+      onClick={() => router.push('/')}
+      />}
       <Box sx={{ 
           width: '100%', 
           position: "fixed", 
@@ -95,13 +108,13 @@ const Header = () => {
             role='navigation'
             centered
             > 
-            <Tab label="Home Page" icon={<HomeOutlined style={{ fontSize: "18px" }} />} iconPosition='start' href="/"/>
+            <Tab label={useMediaQuery('(min-width:1001px)') ? "Головна" : ''} icon={<HomeOutlined style={{ fontSize: "18px" }} />} iconPosition='start' href="/"/>
             {/* <Tab icon={<img src="/Logo/Headerlogo.png" alt="home icon" style={{ width: 60, height: 50 }} />} iconPosition='start'/> */}
-            <Tab label="Shop" icon={<ShoppingOutlined style={{ fontSize: "20px" }} />} iconPosition='start' href='/catalog'/>
+            <Tab label={useMediaQuery('(min-width:1001px)') ? "Магазин" : ''} icon={<ShoppingOutlined style={{ fontSize: "20px" }} />} iconPosition='start' href='/catalog'/>
             <Popover
               content={
               <Search 
-                placeholder="Search" 
+                placeholder="Пошук" 
                 style={{ width: '350px', height: '30px' }} 
                 onSearch={value => console.log(value)}
               />}
@@ -110,15 +123,15 @@ const Header = () => {
               onOpenChange={() => {setSearchPopoverIsOpen(!searchPopoverIsOpen)}}
             >
               <Tab 
-                label="Search" 
+                label={useMediaQuery('(min-width:1001px)') ? "Пошук" : ''}
                 icon={<SearchOutlined style={{ fontSize: "20px" }} />} 
                 iconPosition='start' 
               />
             </Popover>
-            <Tab label="Cart" icon={<ShoppingCartOutlined style={{ fontSize: "20px" }} />} iconPosition='start'/>
+            <Tab label={useMediaQuery('(min-width:1001px)') ? "Кошик" : ''} icon={<ShoppingCartOutlined style={{ fontSize: "20px" }} />} iconPosition='start'/>
             {/* <Tab label='About us' icon={<ReadOutlined style={{ fontSize: "20px" }} />} iconPosition='start' /> */}
-            <Tab label='Contact us' icon={<UserSwitchOutlined style={{ fontSize: "20px" }} />} iconPosition='start' />
-            <Tab icon={!session ? '' : <UserOutlined style={{ fontSize: "20px" }}/>} iconPosition='start' label={!session ? "Увійти" : "Профіль"} href={!session ? '/login' : '/profile'}/>
+            <Tab label={useMediaQuery('(min-width:1001px)') ? "Зворотній зв`язок" : ''} icon={<UserSwitchOutlined style={{ fontSize: "20px" }} />} iconPosition='start' />
+            <Tab icon={!session ? '' : <UserOutlined style={{ fontSize: "20px" }}/>} iconPosition='start' label={useMediaQuery('(min-width:1001px)') ? !session ? "Увійти" : "Профіль" : ''} href={!session ? '/login' : '/profile'}/>
           </Tabs>
         </Box>
       </Box>

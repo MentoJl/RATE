@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { Card, CardContent, Typography, Chip, Pagination, Box, Stack } from '@mui/material'
 import { Grid } from '@mui/system'
 import { Image } from 'antd'
@@ -7,22 +7,30 @@ import {
   useGetAllGoodsQuery,
   useCreateGoodsMutation
 } from '@/app/routes/goodsApi'
+import FilterContext from '@/app/common/dashboards/Catalog/FilterContext'
 
 const GoodsTable = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
   const [createGoods] = useCreateGoodsMutation()
-
-  const { data, isLoading, isError } = useGetAllGoodsQuery()
+  const { searchValue } = useContext(FilterContext)
 
   useEffect(() => {
-    console.log('Data:', data)
-    createGoods({ title: "ghj" })
-  }, [data, isLoading, isError])
+    console.log('Search Value:', searchValue)
+  }, [searchValue])
+
+  const { data, isLoading, isError } = useGetAllGoodsQuery({
+    searchValue: searchValue,
+  })
+
+  // useEffect(() => {
+  //   console.log('Data:', data)
+  //   createGoods({ title: "ghj" })
+  // }, [data, isLoading, isError])
 
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentItems = data?.slice(indexOfFirstItem, indexOfLastItem)
+  const currentItems = data?.slice(indexOfFirstItem, indexOfLastItem) || []
 
   const handleChangePage = (event, value) => {
     setCurrentPage(value)
@@ -31,7 +39,6 @@ const GoodsTable = () => {
   return (
     <Box sx={{ 
       width: "90%",
-      // border: "1px solid black",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",

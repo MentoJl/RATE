@@ -6,6 +6,7 @@ const router = express.Router()
 connectToMongo()
 
 router.get('/', async (req: Request, res: Response) => {
+
   const docs = await UsersSchema.find()
   res.json(docs)
 })

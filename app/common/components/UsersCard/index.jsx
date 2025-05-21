@@ -62,7 +62,7 @@ const UsersCard = () => {
   return (
     <Card
       hoverable
-      title={"Користувачі"}
+      title={"КОРИСТУВАЧІ"}
       extra={ExtrasMenu}
     >
       <DataGrid

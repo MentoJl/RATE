@@ -4,7 +4,7 @@ import { Card } from 'antd'
 const CartCard = () => {
   return (
     <Card 
-    title={"Cart"} 
+    title={"КОШИК"} 
     hoverable
     style={{
       height: '800px'

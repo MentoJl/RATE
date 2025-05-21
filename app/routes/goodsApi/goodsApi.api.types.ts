@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb'
 
-export interface IGoodsApiRequest {
+export interface ICreateGoodsApiRequest {
   _id: ObjectId,
   image: string,
   title: string,
@@ -9,6 +9,10 @@ export interface IGoodsApiRequest {
   category: string,
   price: number,
   priceType: string
+}
+
+export interface IGetGoodsApiRequest {
+  searchValue?: string,
 }
 
 export interface IGoodsApiResponse {
