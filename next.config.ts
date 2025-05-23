@@ -24,6 +24,10 @@ const nextConfig: NextConfig = {
         source: "/catalog",
         destination: "/common/dashboards/Catalog",
       },
+      {
+        source: "/feedback",
+        destination: "/common/dashboards/Feedback",
+      },
     ];
   },
 };

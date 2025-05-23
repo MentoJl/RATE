@@ -2,26 +2,29 @@ import React from "react"
 import { Carousel, Image } from "antd"
 
 const Adds = () => {
-    return (
-        <Carousel 
-        autoplay={{ dotDuration: true }}
-        style={{ width: "100%" }}
-        arrows
-        >
-            <div>
-                <Image preview={false} src='/Carousel/Logo.jpeg' height={400} width='100%'></Image>
-            </div>
-            <div>
-                <Image preview={false} src='/Carousel/Logo2.jpeg' height={400} width='100%'></Image>
-            </div>
-            <div>
-                <Image preview={false} src='/Carousel/Logo.jpeg' height={400} width='100%'></Image>
-            </div>
-            <div>
-                <Image preview={false} src='/Carousel/Logo2.jpeg' height={400} width='100%'></Image>
-            </div>
-        </Carousel>
-    );
+  return (
+    <Carousel
+      autoplay={{ dotDuration: true }}
+      style={{ 
+        width: "100%",
+        // maxWidth: '1400px' 
+      }}
+      arrows
+    >
+      <div>
+        <Image preview={false} src='/Carousel/img08.png' height={400} width='100%'></Image>
+      </div>
+      <div>
+        <Image preview={false} src='/Carousel/img07.png' height={400} width='100%'></Image>
+      </div>
+      <div>
+        <Image preview={false} src='/Carousel/img09.png' height={400} width='100%'></Image>
+      </div>
+      <div>
+        <Image preview={false} src='/Carousel/img06.png' height={400} width='100%'></Image>
+      </div>
+    </Carousel>
+  )
 }
 
 export default Adds

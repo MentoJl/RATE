@@ -3,7 +3,7 @@ import { Box, TextField, Button, Stack } from '@mui/material'
 import FilterContext from '@/app/common/dashboards/Catalog/FilterContext'
 
 const Searcher = () => {
-  const { searchValue, setSearchValue } = useContext(FilterContext)
+  const { setSearchValue } = useContext(FilterContext)
 
   return (
     <Stack
