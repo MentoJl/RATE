@@ -1,31 +1,115 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Grid } from '@mui/system'
 import { TextField, Button, Stack } from '@mui/material'
 import { useSession } from 'next-auth/react'
-import { message, Upload, UploadProps } from 'antd'
+import { message, Upload, UploadProps, notification } from 'antd'
+import { LoadingOutlined } from '@ant-design/icons'
+import getEmailRegex from '@/utils/getEmailRegex'
 import { InboxOutlined } from '@ant-design/icons'
+import { useSendMailMutation } from '@/app/routes/mailApi'
+
 import type { UploadFile } from 'antd/es/upload/interface'
+
+type NotificationType = 'success' | 'info' | 'warning' | 'error'
 
 const Feedback = () => {
 
   const { Dragger } = Upload
   const { data: session } = useSession()
-  const [fileList, setFileList] = React.useState<UploadFile[]>([])
+  const [messageApi, contextHolder] = notification.useNotification()
+  const [sendMail, { isLoading, isError}] = useSendMailMutation()
 
-  useEffect(() => {
-    console.log(fileList)
-  }, [fileList])
+  const [fileList, setFileList] = React.useState<UploadFile[]>([])
+  const emailRef = useRef<HTMLInputElement>(null)
+  const nameRef = useRef<HTMLInputElement>(null)
+  const themeRef = useRef<HTMLInputElement>(null)
+  const descriptionRef = useRef<HTMLInputElement>(null)
+  const [nameError, setNameError] = useState(false)
+  const [emailError, setEmailError] = useState(false)
+  const [themeError, setThemeError] = useState(false)
+  const [descriptionError, setDescriptionError] = useState(false)
+
+  const openNotification = (
+    type: NotificationType, 
+    message: string = '', 
+    desc: string = '',
+    icon: React.ReactNode | string = ''
+  ) => {
+    messageApi[type]({
+      message: message,
+      placement: 'topRight',
+      description: desc,
+      duration: 2,
+      icon,
+    })
+  }
+
+  const handleSubmit = async () => {
+    if (!emailRef?.current?.value) {
+      openNotification('error', 'Пошта', 'Введіть Пошту')
+      setEmailError(true)
+      return
+    }
+    setEmailError(false)
+    if (!nameRef?.current?.value) {
+      openNotification("error", "Ім'я", "Введіть Ім'я")
+      setNameError(true)
+      return
+    }
+    setNameError(false)
+    if (!themeRef?.current?.value) {
+      openNotification("error", "Тема листа", "Введіть Тему листа")
+      setThemeError(true)
+      return
+    }
+    setThemeError(false)
+    if (!descriptionRef?.current?.value) {
+      openNotification("error", "Опис листа", "Введіть Опис листа")
+      setDescriptionError(true)
+      return
+    }
+    setDescriptionError(false)
+    if (!getEmailRegex().test(emailRef?.current?.value ?? '')) {
+      openNotification('error', 'Пошта', 'Введіть коректну Пошту')
+      setEmailError(true)
+      return
+    }
+    setEmailError(false)
+    openNotification('info', 'Обробка', 'Будь ласка зачекайте', <LoadingOutlined />)
+    try {
+
+      const formData = new FormData()
+      formData.append('email', emailRef.current.value)
+      formData.append('name', nameRef.current.value)
+      formData.append('theme', themeRef.current.value)
+      formData.append('desc', descriptionRef.current.value)
+    
+      fileList.forEach((file) => {
+        if (file.originFileObj) {
+          formData.append('files', file.originFileObj)
+        }
+      })
+
+      const response = await sendMail(formData).unwrap()
+
+      if (response.success) {
+        openNotification('success', 'Успіх', 'Лист успішно надіслано')
+        setFileList([])
+      } else {
+        openNotification('error', 'Помилка', response.message || 'Не вдалося надіслати лист')
+      }
+    } catch (error) {
+      openNotification('error', 'Помилка', 'Сталася помилка при надсиланні листа')
+    }
+  }
 
   const props: UploadProps = {
     name: 'file',
     multiple: true,
     onChange(info) {
       const { status } = info.file
-      // if (status !== 'uploading') {
-      //   console.log(info.file, info.fileList)
-      // }
       if (status === 'done') {
         message.success(`Файл успішно завантажено.`)
         setFileList(info.fileList)
@@ -46,10 +130,10 @@ const Feedback = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        // border: "1px solid black",
         marginTop: "20vh"
       }}
     >
+      {contextHolder}
       <Grid
         container
         spacing={6}
@@ -62,8 +146,10 @@ const Feedback = () => {
             variant="standard"
             // label="Пошта"
             placeholder='Моя пошта'
-            disabled={session ? true : false}
-            defaultValue={session ? session?.user?.email : ''}
+            inputRef={emailRef}
+            error={emailError ? true : false}
+            disabled={session?.user?.email ? true : false}
+            defaultValue={session?.user?.email ? session?.user?.email : ''}
             sx={{
               width: '100%',
             }}
@@ -90,6 +176,10 @@ const Feedback = () => {
             <TextField
               variant="standard"
               placeholder="Ім'я"
+              inputRef={nameRef}
+              error={nameError ? true : false}
+              disabled={session?.user?.name ? true : false}
+            defaultValue={session?.user?.name ? session?.user?.name : ''}
               sx={{
                 width: '50%',
               }}
@@ -106,6 +196,8 @@ const Feedback = () => {
               variant="standard"
               // label="Пошта"
               placeholder='Тема листа'
+              inputRef={themeRef}
+              error={themeError ? true : false}
               sx={{
                 width: '50%',
               }}
@@ -139,6 +231,8 @@ const Feedback = () => {
               // label="Пошта"
               multiline
               placeholder='Опис листа'
+              inputRef={descriptionRef}
+              error={descriptionError ? true : false}
               sx={{
                 width: '100%',
               }}
@@ -164,8 +258,10 @@ const Feedback = () => {
               sx={{
                 width: '200px'
               }}
+              onClick={handleSubmit}
+              disabled={isLoading ? true : false}
             >
-            Надіслати
+            {isLoading ? <><LoadingOutlined/>'Надіслати'</> : 'Надіслати'}
             </Button>
           </Stack>
         </Grid>
