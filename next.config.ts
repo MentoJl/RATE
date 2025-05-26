@@ -25,11 +25,15 @@ const nextConfig: NextConfig = {
         destination: "/common/dashboards/Catalog",
       },
       {
+        source: "/catalog/:id",
+        destination: "/common/dashboards/Catalog/:id",
+      },
+      {
         source: "/feedback",
         destination: "/common/dashboards/Feedback",
       },
-    ];
+    ]
   },
-};
+}
 
 export default nextConfig;

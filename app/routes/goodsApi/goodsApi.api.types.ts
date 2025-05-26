@@ -11,8 +11,21 @@ export interface ICreateGoodsApiRequest {
   priceType: string
 }
 
+export interface IGetProductBuyIdRequest {
+  _id: ObjectId,
+}
+
+export interface IGetProductBuyIdResponse {
+  success: boolean,
+  message?: string,
+  data?: ICreateGoodsApiRequest
+}
+
 export interface IGetGoodsApiRequest {
-  searchValue?: string,
+  search?: string,
+  category: string,
+  price: number,
+  productType: string,
 }
 
 export interface IGoodsApiResponse {

@@ -10,8 +10,8 @@ const StoreFilters = () => {
   const { 
     setCategoryValue, 
     setTagValue,
-    setRateValue,
     setPriceValue,
+    setProductType
   } = useContext(FilterContext)
 
   return (
@@ -51,34 +51,7 @@ const StoreFilters = () => {
             { value: 'shoes', label: 'Взуття' },
             { value: 'accessories', label: 'Аксесуари' },
           ]}
-        />
-      </Stack>
-      <Stack
-        sx={{
-          width: "10%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "flex-start",
-        }}
-      >
-        <Title
-          level={5}
-          style={{
-            color: 'gray',
-          }}
-        >
-          Теги
-        </Title>
-        <Select
-          style={{ width: '100%', minWidth: '100px' }}
-          allowClear
-          placeholder={'Всі'}
-          options={[
-            { value: 'clothes', label: 'Одяг' },
-            { value: 'shoes', label: 'Взуття' },
-            { value: 'accessories', label: 'Аксесуари' },
-          ]}
+          onChange={(value) => setCategoryValue(value)}
         />
       </Stack>
       <Stack
@@ -107,6 +80,7 @@ const StoreFilters = () => {
             { value: 100, label: 'До 100 EUR' },
             { value: 1000, label: 'До 1000 EUR' },
           ]}
+          onChange={(value) => setPriceValue(value)}
         />
       </Stack>
       <Stack
@@ -124,19 +98,17 @@ const StoreFilters = () => {
             color: 'gray',
           }}
         >
-          Рейтинг
+          Тип товару
         </Title>
         <Select
           style={{ width: '100%', minWidth: '100px' }}
           allowClear
           placeholder={'Всі'}
           options={[
-            { value: '1', label: '1' },
-            { value: '2', label: '2' },
-            { value: '3', label: '3' },
-            { value: '4', label: '4' },
-            { value: '5', label: '5' },
+            { value: 'NonVerificated', label: 'Не Верифіковані' },
+            { value: 'Verificated', label: 'Верифіковані' },
           ]}
+          onChange={(value) => setProductType(value)}
         />
       </Stack>
     </Stack>

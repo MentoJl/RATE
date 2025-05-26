@@ -21,29 +21,40 @@ const Header = () => {
   const pathname = usePathname()
   const [searchPopoverIsOpen, setSearchPopoverIsOpen] = useState(false)
   const { Search } = Input
-  const [page, setPage] = useState(getDefaultTabValue())
   const [isScrolled, setIsScrolled] = useState(false)
+  const [page, setPage] = useState(0)
 
-  function getDefaultTabValue() {
-    switch (pathname) {
+  useEffect(() => {
+    const cleanPath = pathname.split('?')[0]
+    console.log('Current Path:', cleanPath)
+    switch (cleanPath) {
       case '/':
-        return 0
+        setPage(0)
+        break
       case '/catalog':
-        return 1
+        setPage(1)
+        break
       case '/search':
-        return 2
+        setPage(2)
+        break
       case '/cart':
-        return 3
+        setPage(3)
+        break
       case '/contact':
-        return 4
+        setPage(4)
+        break
       case '/profile':
-        return 5
       case '/login':
-        return 5
+        setPage(5)
+        break
       default:
-        return 0
+        if (cleanPath.startsWith('/catalog/')) {
+          setPage(1)
+        } else {
+          setPage(0)
+        }
     }
-  }
+  }, [pathname])
 
   const handleChangeTab = (tab) => {
     setPage(tab)
@@ -56,6 +67,15 @@ const Header = () => {
 
   if (pathname === '/login') {
     return null
+  }
+
+  const handleSearch = (value) => {
+    if (value) {
+      router.push(`/catalog?searchBy=${value}`)
+    } else {
+      router.push('/catalog')
+    }
+    setSearchPopoverIsOpen(false)
   }
 
   useEffect(() => {
@@ -130,7 +150,7 @@ const Header = () => {
                 <Search
                   placeholder="Пошук"
                   style={{ width: '350px', height: '30px' }}
-                  onSearch={value => console.log(value)}
+                  onSearch={value => handleSearch(value)}
                 />}
               trigger="click"
               open={searchPopoverIsOpen}
@@ -150,10 +170,10 @@ const Header = () => {
             <Tab
               label={useMediaQuery('(min-width:1001px)') ? "Зворотній зв`язок" : ''}
               icon={<UserSwitchOutlined style={{ fontSize: "20px" }} />}
-              iconPosition='start' 
+              iconPosition='start'
               href='/feedback'
             />
-              
+
             <Tab
               icon={!session ? '' : <UserOutlined style={{ fontSize: "20px" }} />}
               iconPosition='start'

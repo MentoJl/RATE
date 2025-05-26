@@ -22,6 +22,17 @@ router.get('/', async (req: Request, res: Response) => {
   }
 })
 
+router.get('/:id', async (req: Request, res: Response) => {
+  try {
+    const { _id } = req.query
+    console.log('hello')
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Error fetching product by ID:', error)
+    res.status(500).json({ success: false, message: 'Server error' })
+  }
+})
+
 router.post('/', async (req: Request, res: Response) => {
   const { name, price } = req.body
   

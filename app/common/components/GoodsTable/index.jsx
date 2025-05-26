@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useEffect, useContext } from 'react'
-import { Card, CardContent, Typography, Chip, Pagination, Box, Stack } from '@mui/material'
+import { Card, CardContent, CardActionArea, Typography, Chip, Pagination, Box, Stack } from '@mui/material'
 import { Grid } from '@mui/system'
 import { Image } from 'antd'
 import {
@@ -8,19 +8,29 @@ import {
   useCreateGoodsMutation
 } from '@/app/routes/goodsApi'
 import FilterContext from '@/app/common/dashboards/Catalog/FilterContext'
+import { useRouter } from 'next/navigation'
 
 const GoodsTable = () => {
+  const router = useRouter()
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
   const [createGoods] = useCreateGoodsMutation()
-  const { searchValue } = useContext(FilterContext)
+  const { 
+    searchValue,
+    categoryValue,
+    priceValue,
+    productType,
+  } = useContext(FilterContext)
 
   useEffect(() => {
-    console.log('Search Value:', searchValue)
-  }, [searchValue])
+    console.log('Search Value:', categoryValue, priceValue, productType)
+  }, [categoryValue, priceValue, productType])
 
   const { data, isLoading, isError } = useGetAllGoodsQuery({
-    searchValue: searchValue,
+    search: searchValue,
+    category: categoryValue,
+    price: priceValue,
+    productType: productType,
   })
 
   // useEffect(() => {
@@ -48,6 +58,9 @@ const GoodsTable = () => {
         {currentItems?.map((item) => (
           <Grid item key={item._id}>
             <Card sx={{ width: 280, height: 420 }}>
+            <CardActionArea
+              onClick={() => router.push(`/catalog/${item._id}`)}
+            >
               <CardContent
                 sx={{
                   display: 'flex',
@@ -91,6 +104,7 @@ const GoodsTable = () => {
                   </Typography>
                 </Stack>
               </CardContent>
+            </CardActionArea>
             </Card>
           </Grid>
         ))}

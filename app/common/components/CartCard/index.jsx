@@ -7,7 +7,7 @@ const CartCard = () => {
     title={"КОШИК"} 
     hoverable
     style={{
-      height: '800px'
+      height: '800px',
     }}>
 
     </Card>

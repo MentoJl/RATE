@@ -3,7 +3,8 @@ import {
   ICreateGoodsApiRequest, 
   IGetGoodsApiRequest, 
   IGoodsApiResponse,
-
+  IGetProductBuyIdRequest,
+  IGetProductBuyIdResponse,
 } from "./goodsApi.api.types"
 
 export const goodsApi = createApi({
@@ -11,10 +12,16 @@ export const goodsApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3001/api/" }),
   endpoints: (builder) => ({
     getAllGoods: builder.query<IGoodsApiResponse, IGetGoodsApiRequest>({
-      query: ({searchValue}) => ({
+      query: (props) => ({
         url: "goods",
         method: "GET",
-        params: { searchValue },
+        params: props,
+      }),
+    }),
+    getProductById: builder.query<IGetProductBuyIdResponse, IGetProductBuyIdRequest>({
+      query: ({_id}) => ({
+        url: `goods/${_id}`,
+        method: "GET",
       }),
     }),
     createGoods: builder.mutation<IGoodsApiResponse, ICreateGoodsApiRequest>({
@@ -29,5 +36,6 @@ export const goodsApi = createApi({
 
 export const { 
   useGetAllGoodsQuery, 
+  useGetProductByIdQuery,
   useCreateGoodsMutation 
 } = goodsApi

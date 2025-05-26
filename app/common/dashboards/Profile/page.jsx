@@ -17,14 +17,21 @@ const ProfilePage = () => {
       <Grid 
         container
         spacing={2}
+        direction={{ xs: 'column', sm: 'row' }}
       >
-        <Grid size={8}>
+        <Grid 
+          item
+          size={8}
+        >
           <Stack spacing={2}>
             <ProfileCard/>
             <UsersCard/>
           </Stack>
         </Grid>
-        <Grid size={4}>
+        <Grid
+          item 
+          size={4}
+        >
             <CartCard/>
           </Grid>
       </Grid>

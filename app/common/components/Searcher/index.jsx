@@ -3,7 +3,7 @@ import { Box, TextField, Button, Stack } from '@mui/material'
 import FilterContext from '@/app/common/dashboards/Catalog/FilterContext'
 
 const Searcher = () => {
-  const { setSearchValue } = useContext(FilterContext)
+  const { searchValue, setSearchValue } = useContext(FilterContext)
 
   return (
     <Stack
@@ -30,6 +30,7 @@ const Searcher = () => {
         }}
         variant="standard"
         placeholder='Пошук'
+        value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
       />
     </Stack>
