@@ -8,7 +8,8 @@ export interface ICreateGoodsApiRequest {
   tags: string[],
   category: string,
   price: number,
-  priceType: string
+  currency: string
+  discription: string,
 }
 
 export interface IGetProductBuyIdRequest {

@@ -24,9 +24,11 @@ router.get('/', async (req: Request, res: Response) => {
 
 router.get('/:id', async (req: Request, res: Response) => {
   try {
-    const { _id } = req.query
-    console.log('hello')
-    res.json({ success: true })
+    const { id } = req.params
+    console.log('Fetching product by ID:', id)
+    const item = await GoodsSchema.findById(id)
+
+    res.json({ success: true, data: item })
   } catch (error) {
     console.error('Error fetching product by ID:', error)
     res.status(500).json({ success: false, message: 'Server error' })

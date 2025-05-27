@@ -1,5 +1,6 @@
 import mongoose from "mongoose"
 import { ObjectId } from "mongodb"
+import { describe } from "node:test"
 
 const GoodsSchema = new mongoose.Schema({
   _id: { type: ObjectId, auto: true },
@@ -9,7 +10,8 @@ const GoodsSchema = new mongoose.Schema({
   tags: [String],
   category: String,
   price: Number,
-  pricetype: String,
+  currency: String,
+  description: String,
 })
 
 export default mongoose.models.Goods || mongoose.model("goods", GoodsSchema)
