@@ -1,28 +1,22 @@
-'use client'
-
-import React from 'react'
-import { Provider } from "react-redux"
 import './global.scss'
-import { store } from './store'
-import '@ant-design/v5-patch-for-react-19'
-import Header from "./common/components/Header"
-import PageSkeleton from "./common/components/PageSkeleton"
-import { FloatButton } from "antd"
-import { SessionProvider } from 'next-auth/react'
+import Providers from './providers'
+
+export const metadata = {
+  title: 'RATE',
+  icons: {
+    icon: './Logo/HeaderLogo-preview.png',
+    shortcut: './Logo/HeaderLogo-preview.png', 
+    apple: './Logo/HeaderLogo-preview.png'
+  }
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-
   return (
-    <html>
+    <html lang="ru">
       <body style={{ margin: 0, backgroundColor: "#f0f2f5" }}>
-        <Provider store={store}>
-          <SessionProvider>
-            <PageSkeleton/>
-            <Header/>
-            {children}
-            <FloatButton.BackTop/>
-          </SessionProvider>
-        </Provider>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   )
