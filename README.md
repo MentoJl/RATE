@@ -35,7 +35,7 @@ Optimized for both mobile devices and desktop screens.
 
 ### Admin Panel for Managing Products and Orders  
 Easy-to-use interface for adding, editing, and deleting products.
-
+---
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
