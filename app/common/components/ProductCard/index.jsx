@@ -24,7 +24,8 @@ export default function ProductCard({ item }) {
       title: item?.data?.title,
       image: item?.data?.image,
       quantity: count,
-      price: item?.data?.price * count,
+      price: item?.data?.price,
+      totalPrice: item?.data?.price * count,
     })
     localStorage.setItem('cartItems', JSON.stringify(cartItems))
     messageApi['success']({

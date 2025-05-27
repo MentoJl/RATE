@@ -1,6 +1,5 @@
 import mongoose from "mongoose"
 import { ObjectId } from "mongodb"
-import { describe } from "node:test"
 
 const GoodsSchema = new mongoose.Schema({
   _id: { type: ObjectId, auto: true },

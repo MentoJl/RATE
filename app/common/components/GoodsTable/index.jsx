@@ -100,7 +100,7 @@ const GoodsTable = () => {
                 </Box>
                 <Stack direction="row" alignItems="center">
                   <Typography variant="h6" fontWeight="bold">
-                    {item.price} {item.priceType}
+                    {item.price} {item.currency}
                   </Typography>
                 </Stack>
               </CardContent>
