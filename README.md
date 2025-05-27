@@ -1,3 +1,35 @@
+![removedBG-v1](https://github.com/user-attachments/assets/de1926a2-0b66-489a-8825-5a419580191a)
+RATE - is a modern web platform for buying and selling products across various categories. The marketplace enables users to easily browse, search, add products to the cart, and place orders through a user-friendly interface.
+
+## Technologies
+
+- **Frontend:** React, Material-UI, Ant Design  
+- **Backend:** Node.js, Express, MongoDB  
+- **Authentication:** NextAuth.js  
+- **State Management:** Redux Toolkit  
+
+---
+
+## Features
+
+### User Registration and Authentication  
+Secure login and personalized user profiles.
+
+### Product Catalog with Filters and Search  
+Convenient browsing by category, tags, price, and rating.
+
+### Detailed Product Pages  
+Full descriptions, reviews, and ratings.
+
+### Shopping Cart  
+Add, remove, and update product quantities before checkout.
+
+### Responsive Design  
+Optimized for both mobile devices and desktop screens.
+
+### Admin Panel for Managing Products and Orders  
+Easy-to-use interface for adding, editing, and deleting products.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
