@@ -1,5 +1,11 @@
-![removedBG-v1](https://github.com/user-attachments/assets/de1926a2-0b66-489a-8825-5a419580191a)
-RATE - is a modern web platform for buying and selling products across various categories. The marketplace enables users to easily browse, search, add products to the cart, and place orders through a user-friendly interface.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3a06e5c7-35cd-4579-8558-66cc053a320c" alt="RATE Logo" width="200" />
+</p>
+
+# RATE
+
+**RATE** is a modern web platform for buying and selling products across various categories. The marketplace enables users to easily browse, search, add products to the cart, and place orders through a user-friendly interface.
+
 
 ## Technologies
 
