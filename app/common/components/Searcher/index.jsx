@@ -1,9 +1,22 @@
-import react, { useContext } from 'react'
-import { Box, TextField, Button, Stack } from '@mui/material'
+import debounce from 'lodash.debounce'
+import React, { useCallback, useContext } from 'react'
+import { TextField, Stack } from '@mui/material'
+import { useSearchParams } from 'next/navigation'
+import SearchIcon from '@mui/icons-material/Search'
 import FilterContext from '@/app/common/dashboards/Catalog/FilterContext'
 
 const Searcher = () => {
-  const { searchValue, setSearchValue } = useContext(FilterContext)
+  const { setSearchValue } = useContext(FilterContext)
+  const searchParams = useSearchParams()
+
+  const searchBy = searchParams.get('searchBy') || ''
+
+  const debouncedSetSearchValue = useCallback(
+    debounce((val) => {
+      setSearchValue(val)
+    }, 500),
+    []
+  )
 
   return (
     <Stack
@@ -16,10 +29,7 @@ const Searcher = () => {
       }}
     >
       <TextField
-        sx={{
-          width: '40%',
-          fontSize: '60px',
-        }}
+        sx={{ width: '40%' }}
         InputProps={{
           sx: {
             fontSize: '24px',
@@ -29,9 +39,9 @@ const Searcher = () => {
           },
         }}
         variant="standard"
-        placeholder='Пошук'
-        value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
+        placeholder="Пошук"
+        onChange={(e) => debouncedSetSearchValue(e.target.value)}
+        defaultValue={searchBy || ''}
       />
     </Stack>
   )

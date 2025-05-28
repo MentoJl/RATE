@@ -7,10 +7,10 @@ connectToMongo()
 
 router.get('/', async (req: Request, res: Response) => {
   try {
-    const { searchValue = '' } = req.query
-
-    const filter = searchValue
-      ? { title: { $regex: searchValue, $options: 'i' } }
+    const { search = '' } = req.query
+    
+    const filter = search
+      ? { title: { $regex: search, $options: 'i' } }
       : {}
 
     const items = await GoodsSchema.find(filter)

@@ -10,8 +10,6 @@ export default function ProductPage(props) {
   const { id } = use(props.params)
   const { data: item, isLoading, isError } = useGetProductByIdQuery({ _id: id }, { skip: !id })
 
-  console.log('Product ', item?.data)
-
   return (
     <Stack
       spacing={4}

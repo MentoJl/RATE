@@ -9,6 +9,7 @@ import { LoadingOutlined } from '@ant-design/icons'
 import getEmailRegex from '@/utils/getEmailRegex'
 import { InboxOutlined } from '@ant-design/icons'
 import { useSendMailMutation } from '@/app/routes/mailApi'
+import '@ant-design/v5-patch-for-react-19'
 
 import type { UploadFile } from 'antd/es/upload/interface'
 

@@ -13,6 +13,7 @@ import { usePathname } from "next/navigation"
 import { Popover, Input, Image } from 'antd'
 import { useRouter } from 'next/navigation'
 import { useSession } from "next-auth/react"
+import '@ant-design/v5-patch-for-react-19'
 
 const Header = () => {
 

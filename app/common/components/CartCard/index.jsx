@@ -1,71 +1,173 @@
-import react, { useState, useEffect } from 'react'
-import { Card, Image, Button } from 'antd'
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import React, { useState, useEffect } from 'react'
+import { Card, Image, Button, Dropdown, Modal, Table, Popconfirm } from 'antd'
+import { DeleteOutlined } from '@mui/icons-material'
 import { Stack } from '@mui/material'
 import { useCreateOrderMutation } from '@/app/routes/orderApi'
 import { useSession } from 'next-auth/react'
 
 const CartCard = () => {
-
   const [cartItems, setCartItems] = useState([])
-  const paginationModel = { page: 0, pageSize: 10 }
-  const [createOrder, { isLoading, error }] = useCreateOrderMutation()
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const { data: session } = useSession()
+  const [createOrder] = useCreateOrderMutation()
+
+  useEffect(() => {
+    const items = JSON.parse(localStorage.getItem('cartItems')) || []
+    const itemsWithId = items.map((item, idx) => ({
+      ...item,
+      id: item.productId || `item-${idx}`,
+      totalPrice: item.quantity * item.price,
+    }))
+    setCartItems(itemsWithId)
+  }, [])
+
+  const handleDeleteProductFromCart = () => {
+    if (selectedRowKeys.length === 0) return
+
+    const newCartItems = cartItems.filter(item => !selectedRowKeys.includes(item.id))
+    setCartItems(newCartItems)
+    localStorage.setItem('cartItems', JSON.stringify(newCartItems))
+    setSelectedRowKeys([])
+  }
+
+  const columns = [
+    {
+      title: '',
+      dataIndex: 'image',
+      width: 70,
+      render: (image, record) => (
+        <Image preview={false} src={image} alt={record.title} width={50} height={50} />
+      ),
+    },
+    {
+      title: 'Назва',
+      dataIndex: 'title',
+      width: 200,
+    },
+    {
+      title: 'Кількість',
+      dataIndex: 'quantity',
+      width: 100,
+      render: (quantity, record) => (
+        <input
+          type="number"
+          min={1}
+          value={quantity}
+          style={{ width: '60px' }}
+          onChange={(e) => {
+            const newQuantity = parseInt(e.target.value, 10) || 1
+            const updatedItems = cartItems.map(item =>
+              item.id === record.id ? { ...item, quantity: newQuantity, totalPrice: newQuantity * item.price } : item
+            )
+            setCartItems(updatedItems)
+            localStorage.setItem('cartItems', JSON.stringify(updatedItems))
+          }}
+        />
+      ),
+    },
+    {
+      title: 'Ціна (шт.)',
+      dataIndex: 'price',
+      width: 100,
+      render: (price) => `${price} USD`,
+    },
+    {
+      title: 'Сума',
+      dataIndex: 'totalPrice',
+      width: 100,
+      render: (totalPrice) => `${totalPrice} USD`,
+    },
+  ]
+
+  const DropMenu = (
+    <Dropdown
+      menu={{
+        items: [
+          {
+            key: 'delete',
+            label: (
+              <Popconfirm
+                title="Видалити вибрані товари?"
+                onConfirm={handleDeleteProductFromCart}
+                okText="Так"
+                cancelText="Ні"
+              >
+                <Button danger icon={<DeleteOutlined />} disabled={selectedRowKeys.length === 0}>
+                  Видалити
+                </Button>
+              </Popconfirm>
+            ),
+          },
+        ],
+      }}
+    >
+      <Button>• • •</Button>
+    </Dropdown>
+  )
 
   const handleCreateOrder = async () => {
+    if (cartItems.length === 0) {
+      alert('Кошик порожній')
+      setIsModalOpen(false)
+      return
+    }
+
     const goods = cartItems.map(item => ({
       productId: item.productId,
       quantity: item.quantity,
       price: item.price,
     }))
-  
+
     const totalSum = cartItems.reduce((total, item) => total + item.quantity * item.price, 0)
-  
+
     try {
       await createOrder({
         userId: session?.user?.id,
-        goods, 
-        totalSum 
+        goods,
+        totalSum,
       }).unwrap()
       alert('Замовлення оформлено!')
       localStorage.removeItem('cartItems')
+      setCartItems([])
+      setSelectedRowKeys([])
+      setIsModalOpen(false)
     } catch (err) {
       console.error('Помилка при оформленні замовлення:', err)
       alert('Щось пішло не так. Спробуйте ще раз.')
     }
-  };
-
-  useEffect(() => {
-    const items = JSON.parse(localStorage.getItem('cartItems')) || []
-    setCartItems(items)
-    console.log('Cart items:', items)
-  }, [])
+  }
 
   return (
-    <Card 
-    title={"КОШИК"} 
-    hoverable
-    >
-      <DataGrid
-        rows={cartItems.map((item, index) => ({ ...item, id: index }))}
-        columns={[
-          { field: 'image', headerName: '', width: 70, renderCell: (params) => (
-            <Image preview={false} src={params.value} alt={params.row.title} width={50} height={50} />
-          )},
-          { field: 'title', headerName: 'Назва', width: 200 },
-          { field: 'quantity', headerName: 'Кількість', width: 100 },
-          { field: 'price', headerName: 'Ціна (шт.)', width: 100 },
-          { field: 'totalPrice', headerName: 'Сума', width: 100 },
-        ]}
-        checkboxSelection
-        initialState={{ pagination: { paginationModel } }}
+    <Card title="КОШИК" hoverable extra={DropMenu}>
+      <Table
+        rowKey="id"
+        columns={columns}
+        dataSource={cartItems}
+        pagination={{ pageSize: 10 }}
+        rowSelection={{
+          selectedRowKeys,
+          onChange: setSelectedRowKeys,
+        }}
+        locale={{ emptyText: 'Кошик пустий' }}
       />
-      <Stack>
+      <Stack spacing={2} style={{ marginTop: 16 }}>
         <h3>Загальна сума: {cartItems.reduce((total, item) => total + item.totalPrice, 0)} USD</h3>
-        <Button type='primary' size='large' style={{ width: '100%' }} onClick={() => handleCreateOrder()}>
+        <Button type="primary" size="large" style={{ width: '100%' }} onClick={() => setIsModalOpen(true)}>
           Оформити замовлення
         </Button>
       </Stack>
+
+      <Modal
+        title="Оформлення замовлення"
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        onOk={handleCreateOrder}
+        okText="Підтвердити"
+        cancelText="Відмінити"
+      >
+        <p>Ви впевнені, що хочете оформити замовлення?</p>
+      </Modal>
     </Card>
   )
 }

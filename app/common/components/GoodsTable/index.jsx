@@ -22,9 +22,10 @@ const GoodsTable = () => {
     productType,
   } = useContext(FilterContext)
 
-  useEffect(() => {
-    console.log('Search Value:', categoryValue, priceValue, productType)
-  }, [categoryValue, priceValue, productType])
+
+  // useEffect(() => {
+  //   console.log('Search Value:', categoryValue, priceValue, productType)
+  // }, [categoryValue, priceValue, productType])
 
   const { data, isLoading, isError } = useGetAllGoodsQuery({
     search: searchValue,
