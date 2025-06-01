@@ -22,6 +22,23 @@ router.get('/', async (req: Request, res: Response) => {
   }
 })
 
+router.get('/user', async (req: Request, res: Response) => {
+  try {
+    const { search = '' } = req.query
+    
+    const filter = search
+      ? { title: { $regex: search, $options: 'i' } }
+      : {}
+
+    const items = await GoodsSchema.find(filter)
+
+    res.json(items)
+  } catch (error) {
+    console.error('Error fetching goods:', error)
+    res.status(500).json({ success: false, message: 'Server error' })
+  }
+})
+
 router.get('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params

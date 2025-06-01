@@ -1,10 +1,10 @@
 export const metadata = {
-  title: 'RATE - Вхід',
+  title: 'RATE',
   icons: {
-    icon: './Logo/HeaderLogo-preview.png',
-    shortcut: './Logo/HeaderLogo-preview.png', 
-    apple: './Logo/HeaderLogo-preview.png'
-  }
+    icon: '/Logo/HeaderLogo-preview.png',
+    shortcut: '/Logo/HeaderLogo-preview.png',
+    apple: '/Logo/HeaderLogo-preview.png',
+  },
 }
 import LoginPage from './LoginPage'
 

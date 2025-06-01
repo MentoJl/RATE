@@ -3,13 +3,18 @@ import { ObjectId } from "mongodb"
 
 const GoodsSchema = new mongoose.Schema({
   _id: { type: ObjectId, auto: true },
-  image: String,
+  images: { type: [String], default: [] },
   title: String,
-  userId: { type: ObjectId,  ref: 'User' },
+  userId: { type: ObjectId, ref: 'User' },
   tags: [String],
-  category: String,
-  price: Number,
+  category: { 
+    type: String, 
+    enum: ['Іжа', 'Одяг', 'Домашні', 'Спорт', 'Електроніка'], 
+    required: true 
+  },
+  price: { type: Number, required: true },
   currency: String,
+  verified: { type: Boolean, default: false, required: false },
   description: String,
 })
 

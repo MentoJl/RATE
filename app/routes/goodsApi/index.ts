@@ -24,6 +24,13 @@ export const goodsApi = createApi({
         method: "GET",
       }),
     }),
+    getProductByUser: builder.query<IGetProductBuyIdResponse, IGetProductBuyIdRequest>({
+      query: ({_id}) => ({
+        url: `goods/user`,
+        method: "GET",
+        params: { _id },
+      }),
+    }),
     createGoods: builder.mutation<IGoodsApiResponse, ICreateGoodsApiRequest>({
       query: (newGoods) => ({
         url: "goods",
@@ -37,5 +44,6 @@ export const goodsApi = createApi({
 export const { 
   useGetAllGoodsQuery, 
   useGetProductByIdQuery,
-  useCreateGoodsMutation 
+  useCreateGoodsMutation,
+  useGetProductByUserQuery,
 } = goodsApi

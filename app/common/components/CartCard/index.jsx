@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Card, Image, Button, Dropdown, Modal, Table, Popconfirm } from 'antd'
+import { Card, Image, Button, Dropdown, Modal, Table, Popconfirm, Form, Input } from 'antd'
 import { DeleteOutlined } from '@mui/icons-material'
 import { Stack } from '@mui/material'
 import { useCreateOrderMutation } from '@/app/routes/orderApi'
@@ -11,6 +11,7 @@ const CartCard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { data: session } = useSession()
   const [createOrder] = useCreateOrderMutation()
+  const [form] = Form.useForm()
 
   useEffect(() => {
     const items = JSON.parse(localStorage.getItem('cartItems')) || []
@@ -24,7 +25,6 @@ const CartCard = () => {
 
   const handleDeleteProductFromCart = () => {
     if (selectedRowKeys.length === 0) return
-
     const newCartItems = cartItems.filter(item => !selectedRowKeys.includes(item.id))
     setCartItems(newCartItems)
     localStorage.setItem('cartItems', JSON.stringify(newCartItems))
@@ -86,6 +86,10 @@ const CartCard = () => {
         items: [
           {
             key: 'delete',
+            // label: 'Видалити',
+            // danger: true,
+            // icon: <DeleteOutlined/>,
+            // onClick: handleDeleteProductFromCart,
             label: (
               <Popconfirm
                 title="Видалити вибрані товари?"
@@ -107,31 +111,30 @@ const CartCard = () => {
   )
 
   const handleCreateOrder = async () => {
-    if (cartItems.length === 0) {
-      alert('Кошик порожній')
-      setIsModalOpen(false)
-      return
-    }
-
-    const goods = cartItems.map(item => ({
-      productId: item.productId,
-      quantity: item.quantity,
-      price: item.price,
-    }))
-
-    const totalSum = cartItems.reduce((total, item) => total + item.quantity * item.price, 0)
-
     try {
+      const values = await form.validateFields()
+
+      const goods = cartItems.map(item => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        price: item.price,
+      }))
+
+      const totalSum = cartItems.reduce((total, item) => total + item.quantity * item.price, 0)
+
       await createOrder({
         userId: session?.user?.id,
         goods,
-        totalSum,
+        price: totalSum,
+        ...values, // name, phone, address
       }).unwrap()
+
       alert('Замовлення оформлено!')
       localStorage.removeItem('cartItems')
       setCartItems([])
       setSelectedRowKeys([])
       setIsModalOpen(false)
+      form.resetFields()
     } catch (err) {
       console.error('Помилка при оформленні замовлення:', err)
       alert('Щось пішло не так. Спробуйте ще раз.')
@@ -144,7 +147,7 @@ const CartCard = () => {
         rowKey="id"
         columns={columns}
         dataSource={cartItems}
-        pagination={{ pageSize: 10 }}
+        pagination={{ pageSize: 5 }}
         rowSelection={{
           selectedRowKeys,
           onChange: setSelectedRowKeys,
@@ -166,7 +169,29 @@ const CartCard = () => {
         okText="Підтвердити"
         cancelText="Відмінити"
       >
-        <p>Ви впевнені, що хочете оформити замовлення?</p>
+        <Form form={form} layout="vertical">
+          <Form.Item
+            label="Ім’я"
+            name="name"
+            rules={[{ required: true, message: 'Введіть ім’я' }]}
+          >
+            <Input placeholder="Ім’я" />
+          </Form.Item>
+          <Form.Item
+            label="Телефон"
+            name="phone"
+            rules={[{ required: true, message: 'Введіть номер телефону' }]}
+          >
+            <Input placeholder="+380..." />
+          </Form.Item>
+          <Form.Item
+            label="Адреса доставки"
+            name="address"
+            rules={[{ required: true, message: 'Введіть адресу доставки' }]}
+          >
+            <Input.TextArea placeholder="Місто, вулиця, будинок, квартира" rows={3} />
+          </Form.Item>
+        </Form>
       </Modal>
     </Card>
   )

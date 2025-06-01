@@ -4,6 +4,7 @@ import { Stack } from '@mui/material'
 import ProfileCard from '@/app/common/components/ProfileCard'
 import UsersCard from '@/app/common/components/UsersCard'
 import CartCard from '@/app/common/components/CartCard'
+import UserProductsCard from '@/app/common/components/UserProductsCard'
 import { Splitter } from 'antd'
 import '@ant-design/v5-patch-for-react-19'
 
@@ -14,6 +15,7 @@ const ProfilePage = () => {
         <Splitter.Panel defaultSize="75%" min="40%" max="75%">
           <Stack spacing={1}>
             <ProfileCard />
+            <UserProductsCard/>
             <UsersCard />
           </Stack>
         </Splitter.Panel>

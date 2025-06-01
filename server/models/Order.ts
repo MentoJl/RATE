@@ -25,7 +25,7 @@ const OrderSchema = new Schema({
       }
     }
   ],
-  totalSum: {
+  price: {
     type: Number,
     required: true
   },

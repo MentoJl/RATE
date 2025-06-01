@@ -7,16 +7,16 @@ connectToMongo()
 
 router.post('/', async (req: Request, res: Response) => {
   try {
-    const { userId, goods, totalSum } = req.body
+    const { userId, goods, price } = req.body
     
-    if (!userId || !goods || totalSum === undefined) {
+    if (!userId || !goods || price === undefined) {
       res.status(400).json({ message: 'Missing required fields' })
     }
 
     const newOrder = new OrderSchema({
       userId,
       goods,
-      totalSum,
+      price,
       status: 'created',
     })  
 
