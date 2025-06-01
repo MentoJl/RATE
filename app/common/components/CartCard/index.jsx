@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Card, Image, Button, Dropdown, Modal, Table, Popconfirm, Form, Input } from 'antd'
-import { DeleteOutlined } from '@mui/icons-material'
+import { DeleteOutlined } from '@ant-design/icons'
 import { Stack } from '@mui/material'
 import { useCreateOrderMutation } from '@/app/routes/orderApi'
 import { useSession } from 'next-auth/react'
@@ -86,10 +86,8 @@ const CartCard = () => {
         items: [
           {
             key: 'delete',
-            // label: 'Видалити',
-            // danger: true,
-            // icon: <DeleteOutlined/>,
-            // onClick: handleDeleteProductFromCart,
+            danger: true,
+            icon: <DeleteOutlined style={{ fontSize: '16px' }} />,
             label: (
               <Popconfirm
                 title="Видалити вибрані товари?"
@@ -97,9 +95,7 @@ const CartCard = () => {
                 okText="Так"
                 cancelText="Ні"
               >
-                <Button danger icon={<DeleteOutlined />} disabled={selectedRowKeys.length === 0}>
-                  Видалити
-                </Button>
+                Видалити
               </Popconfirm>
             ),
           },

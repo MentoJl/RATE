@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express'
 import { connectToMongo } from '@/server/db'
 import GoodsSchema from '@/server/models/Goods'
+import { Types } from 'mongoose'
 
 const router = express.Router()
 connectToMongo()
@@ -22,19 +23,17 @@ router.get('/', async (req: Request, res: Response) => {
   }
 })
 
-router.get('/user', async (req: Request, res: Response) => {
+router.get('/userId', async (req: Request, res: Response) => {
   try {
-    const { search = '' } = req.query
-    
-    const filter = search
-      ? { title: { $regex: search, $options: 'i' } }
-      : {}
+    const { _id = '' } = req.query
 
-    const items = await GoodsSchema.find(filter)
+    const domainObjectId = new Types.ObjectId(`${_id}`)
 
-    res.json(items)
+    const items = await GoodsSchema.find({ domain: domainObjectId })
+
+    res.json({ success: true, items })
   } catch (error) {
-    console.error('Error fetching goods:', error)
+    console.error('Error fetching product by ID:', error)
     res.status(500).json({ success: false, message: 'Server error' })
   }
 })
@@ -42,7 +41,6 @@ router.get('/user', async (req: Request, res: Response) => {
 router.get('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params
-    console.log('Fetching product by ID:', id)
     const item = await GoodsSchema.findById(id)
 
     res.json({ success: true, data: item })
@@ -56,6 +54,17 @@ router.post('/', async (req: Request, res: Response) => {
   const { name, price } = req.body
   
   res.json("ok")
+})
+
+router.delete('/', async (req: Request, res: Response) => {
+  try {
+    const { _id } = req.params
+    const item = await GoodsSchema.findByIdAndDelete(_id)
+
+    res.json({ success: true, data: item })
+  } catch (error) {
+    res.status(500).json({ success: false, message: error })
+  }
 })
 
 export default router

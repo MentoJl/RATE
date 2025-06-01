@@ -1,35 +1,63 @@
-import React, { useState, useEffect } from 'react'
-import { Card, Image, Button, Dropdown, Modal, Table, Popconfirm, Form, Input } from 'antd'
-import { DeleteOutlined } from '@mui/icons-material'
-import { Stack } from '@mui/material'
-import { useGetProductByUserQuery } from '@/app/routes/goodsApi'
+import React, { useState } from 'react'
+import { 
+  Card, 
+  Image, 
+  Button, 
+  Dropdown, 
+  Table, 
+  Popconfirm, 
+  notification,
+} from 'antd'
+import {
+  DeleteOutlined,
+  AppstoreAddOutlined
+} from '@ant-design/icons'
+import { 
+  useGetProductByUserQuery,
+  useDeleteGoodsMutation,
+} from '@/app/routes/goodsApi'
 import { useSession } from 'next-auth/react'
+import Link from 'next/link'
+import ProductModal from '@/app/common/components/ProductModal'
 
 export default function UserProductsCard() {
-  const [cartItems, setCartItems] = useState([])
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
+  const [messageApi, contextHolder] = notification.useNotification()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { data: session } = useSession()
-  const [form] = Form.useForm()
-  
-  const { data } = useGetProductByUserQuery({ _id: session?.user?.id })
+  const [deleteGoods, { isLoading: isDeleting }] = useDeleteGoodsMutation()
 
-  useEffect(() => {
-    const items =  []
-    const itemsWithId = items.map((item, idx) => ({
-      ...item,
-      id: item.productId || `item-${idx}`,
-      totalPrice: item.quantity * item.price,
-    }))
-    setCartItems(itemsWithId)
-  }, [])
+  const { data, refetch } = useGetProductByUserQuery(
+    { _id: session?.user?.id },
+    { skip: !session?.user?.id }
+  )
 
-  const handleDeleteProductFromCart = () => {
-    if (selectedRowKeys.length === 0) return
-    const newCartItems = cartItems.filter(item => !selectedRowKeys.includes(item.id))
-    setCartItems(newCartItems)
-    localStorage.setItem('cartItems', JSON.stringify(newCartItems))
-    setSelectedRowKeys([])
+  const products = data?.items || []
+
+  const handleDeleteProductFromCart = async () => {
+    try {
+      // await Promise.all(selectedRowKeys.map((_id) => deleteGoods({_id}).unwrap()))
+      setIsModalOpen(true)
+      messageApi.success({
+        message: 'Товари успішно видалені',
+        duration: 2,
+      })
+      setSelectedRowKeys([])
+      refetch()
+    } catch (err) {
+      messageApi.error({
+        message: 'Помилка при видалені товарів',
+        duration: 2,
+      })
+    }
+  }
+
+  const handleConfirmModal = () => {
+    setIsModalOpen(false)
+  }
+
+  const handleCancelModal = () => {
+    setIsModalOpen(false)
   }
 
   const columns = [
@@ -45,6 +73,11 @@ export default function UserProductsCard() {
       title: 'Назва',
       dataIndex: 'title',
       width: 200,
+      render: (text, record) => (
+        <Link href={`/catalog/${record._id}`} style={{ color: '#1677ff' }}>
+          {text}
+        </Link>
+      ),
     },
     {
       title: 'Категорія',
@@ -64,11 +97,16 @@ export default function UserProductsCard() {
       menu={{
         items: [
           {
+            key: 'create',
+            icon: <AppstoreAddOutlined style={{ fontSize: '16px' }} />,
+            disabled: isDeleting,
+            label: "Додати товар",
+          },
+          {
             key: 'delete',
-            // label: 'Видалити',
-            // danger: true,
-            // icon: <DeleteOutlined/>,
-            // onClick: handleDeleteProductFromCart,
+            danger: true,
+            icon: <DeleteOutlined style={{ fontSize: '16px' }} />,
+            disabled: isDeleting,
             label: (
               <Popconfirm
                 title="Видалити обрані товари?"
@@ -76,9 +114,7 @@ export default function UserProductsCard() {
                 okText="Так"
                 cancelText="Ні"
               >
-                <Button danger icon={<DeleteOutlined />} disabled={selectedRowKeys.length === 0}>
-                  Видалити
-                </Button>
+                Видалити
               </Popconfirm>
             ),
           },
@@ -89,22 +125,25 @@ export default function UserProductsCard() {
     </Dropdown>
   )
 
-  const handleCreateOrder = async () => {
-    
-  }
-
   return (
     <Card title="МОЇ ТОВАРИ" hoverable extra={DropMenu}>
+      {contextHolder}
       <Table
-        rowKey="id"
+        rowKey={(record) => record._id}
         columns={columns}
-        dataSource={cartItems}
+        dataSource={products}
         pagination={{ pageSize: 5 }}
         rowSelection={{
           selectedRowKeys,
           onChange: setSelectedRowKeys,
         }}
         locale={{ emptyText: 'Поки немає власних товарів' }}
+      />
+      <ProductModal
+        visible={isModalOpen}
+        onSave={handleConfirmModal}
+        onCancel={handleCancelModal}
+        product={[]}
       />
     </Card>
   )

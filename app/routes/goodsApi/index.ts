@@ -26,7 +26,7 @@ export const goodsApi = createApi({
     }),
     getProductByUser: builder.query<IGetProductBuyIdResponse, IGetProductBuyIdRequest>({
       query: ({_id}) => ({
-        url: `goods/user`,
+        url: `goods/userId`,
         method: "GET",
         params: { _id },
       }),
@@ -38,6 +38,13 @@ export const goodsApi = createApi({
         body: newGoods,
       }),
     }),
+    deleteGoods: builder.mutation<IGoodsApiResponse, IGetProductBuyIdRequest>({
+      query: ({_id}) => ({
+        url: "goods",
+        method: "DELETE",
+        body: {_id},
+      }),
+    }),
   }),
 })
 
@@ -46,4 +53,5 @@ export const {
   useGetProductByIdQuery,
   useCreateGoodsMutation,
   useGetProductByUserQuery,
+  useDeleteGoodsMutation,
 } = goodsApi

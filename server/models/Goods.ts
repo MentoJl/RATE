@@ -5,7 +5,7 @@ const GoodsSchema = new mongoose.Schema({
   _id: { type: ObjectId, auto: true },
   images: { type: [String], default: [] },
   title: String,
-  userId: { type: ObjectId, ref: 'User' },
+  domain: { type: ObjectId, ref: 'User' },
   tags: [String],
   category: { 
     type: String, 

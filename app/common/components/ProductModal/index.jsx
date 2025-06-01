@@ -30,25 +30,27 @@ export default function ProductModal({
   const [fileList, setFileList] = useState([])
 
   useEffect(() => {
-    form.setFieldsValue({
-      title: product?.title || '',
-      price: product?.price || 0,
-      description: product?.description || '',
-      category: product?.category || [],
-      tags: product?.tags || [],
-    })
-
-    setFileList(
-      (product?.images || [product?.image])
-        .filter(Boolean)
-        .map((url, idx) => ({
-          uid: `-1-${idx}`,
-          name: `image${idx + 1}.jpg`,
-          status: 'done',
-          url,
-        }))
-    )
-  }, [product, form])
+    if (visible) {
+      form.setFieldsValue({
+        title: product?.title || '',
+        price: product?.price || 0,
+        description: product?.description || '',
+        category: product?.category || [],
+        tags: product?.tags || [],
+      })
+  
+      setFileList(
+        (product?.images || [product?.image])
+          .filter(Boolean)
+          .map((url, idx) => ({
+            uid: `-1-${idx}`,
+            name: `image${idx + 1}.jpg`,
+            status: 'done',
+            url,
+          }))
+      )
+    }
+  }, [visible, product, form])
 
   const handleOk = () => {
     form.validateFields().then(values => {
