@@ -15,6 +15,7 @@ const CartCard = () => {
 
   useEffect(() => {
     const items = JSON.parse(localStorage.getItem('cartItems')) || []
+    console.log(items)
     const itemsWithId = items.map((item, idx) => ({
       ...item,
       id: item.productId || `item-${idx}`,
@@ -37,7 +38,7 @@ const CartCard = () => {
       dataIndex: 'image',
       width: 70,
       render: (image, record) => (
-        <Image preview={false} src={image} alt={record.title} width={50} height={50} />
+        <Image preview={false} src={`http://localhost:3001${image}`} alt={record.title} width={50} height={50} />
       ),
     },
     {
@@ -87,6 +88,7 @@ const CartCard = () => {
           {
             key: 'delete',
             danger: true,
+            disabled: selectedRowKeys.length === 0,
             icon: <DeleteOutlined style={{ fontSize: '16px' }} />,
             label: (
               <Popconfirm

@@ -9,10 +9,16 @@ import {
   Rate,
   Dropdown,
   notification,
+  Tooltip,
 } from 'antd'
-import { EditOutlined } from '@ant-design/icons'
+import { 
+  EditOutlined,
+  InfoCircleOutlined
+} from '@ant-design/icons'
 import { useState } from "react"
 import ProductModal from '@/app/common/components/ProductModal'
+import { useCreateGoodsMutation } from "@/app/routes/goodsApi"
+import { useSession } from "next-auth/react"
 
 const { Title } = Typography
 
@@ -20,13 +26,15 @@ export default function ProductCard({ item }) {
   const [count, setCount] = useState(1)
   const [messageApi, contextHolder] = notification.useNotification()
   const [isModalOpen, setIsModalOpen] = useState(false)
-
+  const { session } = useSession()
+  const [ createGoods, { isLoading, }] = useCreateGoodsMutation()
+  
   const handleAddToCart = (productId) => {
     const cartItems = JSON.parse(localStorage.getItem('cartItems')) || []
     cartItems.push({
       productId,
       title: item?.data?.title,
-      image: item?.data?.image,
+      image: item?.data?.images[0],
       quantity: count,
       price: item?.data?.price,
       totalPrice: item?.data?.price * count,
@@ -43,8 +51,22 @@ export default function ProductCard({ item }) {
     setIsModalOpen(true)
   }
 
-  const handleModalOk = (updatedProduct) => {
+  const handleModalOk = async (updatedProduct) => {
     console.log('Updated product:', updatedProduct)
+    const formData = new FormData()
+
+    formData.append('title', updatedProduct?.title)
+    formData.append('userId', session?.user?.id)
+    formData.append('category', updatedProduct?.category)
+    formData.append('price', updatedProduct?.price.toString())
+    formData.append('description', updatedProduct?.description)
+  
+    formData.append('tags', JSON.stringify(updatedProduct?.tags))
+  
+    updatedProduct?.images?.forEach(file => {
+      formData.append('images', file)
+    })
+    await createGoods({ formData })
     setIsModalOpen(false)
     messageApi.success({ message: 'Товар оновлено' })
   }
@@ -70,22 +92,36 @@ export default function ProductCard({ item }) {
     </Dropdown>
   )
 
+  console.log(item?.data?.images[0])
+  console.log(item?.data?.image)
+
   return (
     <>
       {contextHolder}
 
       <Card
         title={
-          <Tag color={item?.data?.verified ? "green" : ''}>
-            {item?.data?.verified ? 'ВЕРИФІКОВАНИЙ ТОВАР' : 'НЕ ВЕРИФІКОВАНИЙ ТОВАР'}
-          </Tag>
+          <>
+            <Tag color={item?.data?.verified ? "green" : ''}>
+              {item?.data?.verified ? 'ВЕРИФІКОВАНИЙ ТОВАР' : 'НЕ ВЕРИФІКОВАНИЙ ТОВАР'}
+            </Tag>
+            <Tooltip
+              title={
+                item?.data?.verified
+                  ? 'Верифікований товар — це товар, який підтверджено сертифікатом та постачається оригінальним постачальником.'
+                  : 'Неверифікований товар — це товар, постачається місцевим постачальником.'
+              }
+            >
+              <InfoCircleOutlined style={{ fontSize: '16px', color: '#1677ff', cursor: 'pointer' }} />
+            </Tooltip>
+          </>
         }
         extra={ExtrasMenu}
       >
         <Grid container spacing={2} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly" }}>
           <Grid size={8}>
             <Image
-              src={item?.data?.image}
+              src={`http://localhost:3001${item?.data?.images[0]}`}
               alt={item?.data?.title}
               width={400}
               height={400}

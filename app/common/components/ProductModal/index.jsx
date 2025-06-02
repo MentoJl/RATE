@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react'
 const { TextArea } = Input
 
 const categories = [
-  'Іжа',
+  'Їжа',
   'Одяг',
   'Домашні',
   'Спорт',
@@ -21,6 +21,7 @@ const categories = [
 ]
 
 export default function ProductModal({
+  create = false,
   visible,
   onCancel,
   onSave,
@@ -38,7 +39,7 @@ export default function ProductModal({
         category: product?.category || [],
         tags: product?.tags || [],
       })
-  
+
       setFileList(
         (product?.images || [product?.image])
           .filter(Boolean)
@@ -46,7 +47,7 @@ export default function ProductModal({
             uid: `-1-${idx}`,
             name: `image${idx + 1}.jpg`,
             status: 'done',
-            url,
+            url: `http://localhost:3001${url}`,
           }))
       )
     }
@@ -56,7 +57,7 @@ export default function ProductModal({
     form.validateFields().then(values => {
       const updatedProduct = {
         ...values,
-        images: fileList.map(f => f.url || (f.originFileObj ? URL.createObjectURL(f.originFileObj) : null)),
+        fileList,
       }
       onSave(updatedProduct)
     }).catch(info => {
@@ -75,7 +76,7 @@ export default function ProductModal({
 
   return (
     <Modal
-      title="Редагувати товар"
+      title={create ? 'Додати товар' : 'Редагувати товар'}
       open={visible}
       onOk={handleOk}
       onCancel={onCancel}
@@ -85,24 +86,43 @@ export default function ProductModal({
       destroyOnClose
     >
       <Form layout="vertical" form={form}>
-        <Form.Item label="Назва товару" name="title" rules={[{ required: true, message: 'Введіть назву товару' }]}>
-          <Input />
+        <Form.Item
+          label="Назва товару"
+          name="title"
+          rules={[{ required: true, message: 'Введіть назву товару' }]}
+        >
+          <Input placeholder='Введіть назву товару' />
         </Form.Item>
 
-        <Form.Item label="Ціна" name="price" rules={[{ required: true, message: 'Введіть ціну' }]}>
-          <InputNumber min={0} style={{ width: '100%' }} />
+        <Form.Item
+          label="Ціна"
+          name="price"
+          rules={[{ required: true, message: 'Введіть ціну' }]}
+        >
+          <InputNumber min={0} style={{ width: '100%' }} placeholder='Введіть ціну' />
         </Form.Item>
 
-        <Form.Item label="Категорія" name="category" rules={[{ required: true, message: 'Оберіть категорію' }]}>
-          <Select options={categories.map(cat => ({ label: cat, value: cat }))} />
+        <Form.Item
+          label="Категорія"
+          name="category"
+          rules={[{ required: true, message: 'Оберіть категорію' }]}
+        >
+          <Select
+            options={categories.map(cat => ({ label: cat, value: cat }))}
+            placeholder='Оберіть категорію'
+          />
         </Form.Item>
 
-        <Form.Item label="Теги" name="tags" rules={[{ required: true, message: 'Оберіть теги' }]}>
+        <Form.Item
+          label="Теги"
+          name="tags"
+          rules={[{ required: true, message: 'Оберіть теги' }]}
+        >
           <Select mode="tags" style={{ width: '100%' }} placeholder="Додайте теги" />
         </Form.Item>
 
         <Form.Item label="Опис" name="description">
-          <TextArea rows={4} />
+          <TextArea rows={4} placeholder='Введіть опис товару' />
         </Form.Item>
 
         <Form.Item label="Фотографії">
@@ -112,7 +132,6 @@ export default function ProductModal({
             onChange={handleUploadChange}
             onRemove={handleRemove}
             beforeUpload={() => false}
-            preview={false}
             multiple
           >
             {fileList.length >= 5 ? null : (

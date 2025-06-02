@@ -1,31 +1,36 @@
 import React, { useState } from 'react'
-import { 
-  Card, 
-  Image, 
-  Button, 
-  Dropdown, 
-  Table, 
-  Popconfirm, 
+import {
+  Card,
+  Image,
+  Button,
+  Dropdown,
+  Table,
+  Popconfirm,
   notification,
+  Tag,
+  Tooltip
 } from 'antd'
 import {
   DeleteOutlined,
-  AppstoreAddOutlined
+  AppstoreAddOutlined,
+  InfoCircleOutlined
 } from '@ant-design/icons'
-import { 
+import {
   useGetProductByUserQuery,
   useDeleteGoodsMutation,
 } from '@/app/routes/goodsApi'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import ProductModal from '@/app/common/components/ProductModal'
+import { useCreateGoodsMutation } from "@/app/routes/goodsApi"
 
 export default function UserProductsCard() {
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [messageApi, contextHolder] = notification.useNotification()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { data: session } = useSession()
-  const [deleteGoods, { isLoading: isDeleting }] = useDeleteGoodsMutation()
+  const [ deleteGoods, { isLoading: isDeleting }] = useDeleteGoodsMutation()
+  const [ createGoods, { isLoading: isCreating, }] = useCreateGoodsMutation()
 
   const { data, refetch } = useGetProductByUserQuery(
     { _id: session?.user?.id },
@@ -37,7 +42,6 @@ export default function UserProductsCard() {
   const handleDeleteProductFromCart = async () => {
     try {
       // await Promise.all(selectedRowKeys.map((_id) => deleteGoods({_id}).unwrap()))
-      setIsModalOpen(true)
       messageApi.success({
         message: 'Товари успішно видалені',
         duration: 2,
@@ -52,7 +56,26 @@ export default function UserProductsCard() {
     }
   }
 
-  const handleConfirmModal = () => {
+  const handleConfirmModal = async (newProduct) => {
+    console.log('Updated product:', newProduct)
+    const formData = new FormData()
+
+    formData.append('title', newProduct?.title)
+    formData.append('userId', session?.user?.id)
+    formData.append('category', newProduct?.category)
+    formData.append('price', newProduct?.price.toString())
+    formData.append('description', newProduct?.description)
+  
+    formData.append('tags', JSON.stringify(newProduct?.tags))
+  
+    newProduct?.fileList?.forEach(file => {
+      formData.append('images', file.originFileObj || file)
+    })
+    await createGoods(formData)
+    messageApi.success({
+      message: 'Товар успішно додано',
+      duration: 2,
+    })
     setIsModalOpen(false)
   }
 
@@ -63,10 +86,10 @@ export default function UserProductsCard() {
   const columns = [
     {
       title: '',
-      dataIndex: 'image',
+      dataIndex: 'images',
       width: 70,
       render: (image, record) => (
-        <Image preview={false} src={image} alt={record.title} width={50} height={50} />
+        <Image preview={false} src={`http://localhost:3001${image}`} alt={record.title} width={50} height={50} />
       ),
     },
     {
@@ -90,6 +113,27 @@ export default function UserProductsCard() {
       width: 100,
       render: (price) => `${price} USD`,
     },
+    {
+      title: 'Статус товару',
+      dataIndex: 'verified',
+      width: 180,
+      render: (verified) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Tag color={verified ? 'green' : ''}>
+            {verified ? 'ВЕРИФІКОВАНИЙ' : 'НЕ ВЕРИФІКОВАНИЙ'}
+          </Tag>
+          <Tooltip
+            title={
+              verified
+                ? 'Верифікований товар — це товар, який підтверджено сертифікатом та постачається оригінальним постачальником.'
+                : 'Неверифікований товар — це товар, постачається місцевим постачальником.'
+            }
+          >
+            <InfoCircleOutlined style={{ fontSize: '16px', color: '#1677ff', cursor: 'pointer' }} />
+          </Tooltip>
+        </div>
+      ),
+    },
   ]
 
   const DropMenu = (
@@ -101,12 +145,13 @@ export default function UserProductsCard() {
             icon: <AppstoreAddOutlined style={{ fontSize: '16px' }} />,
             disabled: isDeleting,
             label: "Додати товар",
+            onClick: (() => setIsModalOpen(true))
           },
           {
             key: 'delete',
             danger: true,
             icon: <DeleteOutlined style={{ fontSize: '16px' }} />,
-            disabled: isDeleting,
+            disabled: isDeleting || selectedRowKeys.length === 0,
             label: (
               <Popconfirm
                 title="Видалити обрані товари?"
@@ -140,6 +185,7 @@ export default function UserProductsCard() {
         locale={{ emptyText: 'Поки немає власних товарів' }}
       />
       <ProductModal
+        create={true}
         visible={isModalOpen}
         onSave={handleConfirmModal}
         onCancel={handleCancelModal}

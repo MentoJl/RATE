@@ -1,12 +1,18 @@
-import React from 'react'
-import { useState, useEffect, useContext } from 'react'
-import { Card, CardContent, CardActionArea, Typography, Chip, Pagination, Box, Stack } from '@mui/material'
+import React, { useState, useContext } from 'react'
+import {
+  Card,
+  CardContent,
+  CardActionArea,
+  Typography,
+  Chip,
+  Pagination,
+  Box,
+  Stack,
+  Tooltip,
+} from '@mui/material'
 import { Grid } from '@mui/system'
 import { Image } from 'antd'
-import {
-  useGetAllGoodsQuery,
-  useCreateGoodsMutation
-} from '@/app/routes/goodsApi'
+import { useGetAllGoodsQuery, useCreateGoodsMutation } from '@/app/routes/goodsApi'
 import FilterContext from '@/app/common/dashboards/Catalog/FilterContext'
 import { useRouter } from 'next/navigation'
 
@@ -15,17 +21,7 @@ const GoodsTable = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
   const [createGoods] = useCreateGoodsMutation()
-  const { 
-    searchValue,
-    categoryValue,
-    priceValue,
-    productType,
-  } = useContext(FilterContext)
-
-
-  // useEffect(() => {
-  //   console.log('Search Value:', categoryValue, priceValue, productType)
-  // }, [categoryValue, priceValue, productType])
+  const { searchValue, categoryValue, priceValue, productType } = useContext(FilterContext)
 
   const { data, isLoading, isError } = useGetAllGoodsQuery({
     search: searchValue,
@@ -33,11 +29,6 @@ const GoodsTable = () => {
     price: priceValue,
     productType: productType,
   })
-
-  // useEffect(() => {
-  //   console.log('Data:', data)
-  //   createGoods({ title: "ghj" })
-  // }, [data, isLoading, isError])
 
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
@@ -48,65 +39,106 @@ const GoodsTable = () => {
   }
 
   return (
-    <Box sx={{ 
-      width: "90%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      flexDirection: "column"
-    }}>
-      <Grid container spacing={3} justifyContent="center">
+    <Box
+      sx={{
+        width: '100%',
+        px: 4,
+        py: 4,
+        borderRadius: 4,
+      }}
+    >
+      <Grid container spacing={4} justifyContent="center">
         {currentItems?.map((item) => (
           <Grid item key={item._id}>
-            <Card sx={{ width: 280, height: 420 }}>
-            <CardActionArea
-              onClick={() => router.push(`/catalog/${item._id}`)}
-            >
-              <CardContent
+            <CardActionArea onClick={() => router.push(`/catalog/${item._id}`)}>
+              <Card
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  height: '100%',
-                  gap: 2.5,
+                  width: 280,
+                  height: 450,
+                  borderRadius: 4,
+                  boxShadow: 6,
+                  transition: '0.3s',
+                  '&:hover': {
+                    transform: 'scale(1.03)',
+                  },
                 }}
               >
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  width={200}
-                  height={200}
-                  preview={false}
-                  style={{ borderRadius: '10px' }}
-                />
-                <Typography variant="h6" align="center">
-                  {item.title}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ fontWeight: 'bold' }}
+                <CardContent
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    height: '100%',
+                    gap: 2.5,
+                    p: 2,
+                  }}
                 >
-                  {item.category}
-                </Typography>
-                <Box>
-                  {item.tags.map((tag, index) => (
-                    <Chip
-                      key={index}
-                      label={tag}
-                      size="small"
-                      sx={{ marginInline: 0.5 }}
+                  {item.images && item.images.length > 0 ? (
+                    <Image
+                      src={`http://localhost:3001${item.images[0]}`}
+                      alt={item.title}
+                      width={200}
+                      height={200}
+                      preview={false}
+                      style={{ borderRadius: '12px', objectFit: 'cover' }}
                     />
-                  ))}
-                </Box>
-                <Stack direction="row" alignItems="center">
-                  <Typography variant="h6" fontWeight="bold">
-                    {item.price} {item.currency}
+                  ) : (
+                    <Box
+                      sx={{
+                        width: 200,
+                        height: 200,
+                        borderRadius: '12px',
+                        backgroundColor: '#f0f0f0',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#999',
+                      }}
+                    >
+                      No Image
+                    </Box>
+                  )}
+                  <Typography
+                    variant="h6"
+                    align="center"
+                    sx={{ fontWeight: 600, color: '#333' }}
+                  >
+                    {item.title}
                   </Typography>
-                </Stack>
-              </CardContent>
+                  <Chip
+                    label={item.category}
+                    color="primary"
+                    variant="outlined"
+                    size="small"
+                  />
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    useFlexGap
+                    flexWrap="wrap"
+                    justifyContent="center"
+                  >
+                    {item.tags.map((tag, index) => (
+                      <Chip
+                        key={index}
+                        label={tag}
+                        size="small"
+                        variant="outlined"
+                        sx={{ bgcolor: '#e8f5e9' }}
+                      />
+                    ))}
+                  </Stack>
+                  <Stack direction="row" alignItems="center" gap={0.5}>
+                    <Typography variant="h6" fontWeight="bold" color="#1976d2">
+                      {item.price}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {item.currency}
+                    </Typography>
+                  </Stack>
+                </CardContent>
+              </Card>
             </CardActionArea>
-            </Card>
           </Grid>
         ))}
       </Grid>
@@ -115,7 +147,7 @@ const GoodsTable = () => {
         page={currentPage}
         onChange={handleChangePage}
         color="primary"
-        style={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }}
+        sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}
       />
     </Box>
   )

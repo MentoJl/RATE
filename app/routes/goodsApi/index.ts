@@ -31,11 +31,11 @@ export const goodsApi = createApi({
         params: { _id },
       }),
     }),
-    createGoods: builder.mutation<IGoodsApiResponse, ICreateGoodsApiRequest>({
-      query: (newGoods) => ({
-        url: "goods",
-        method: "POST",
-        body: newGoods,
+    createGoods: builder.mutation<any, FormData>({
+      query: (formData) => ({
+        url: 'goods',
+        method: 'POST',
+        body: formData,
       }),
     }),
     deleteGoods: builder.mutation<IGoodsApiResponse, IGetProductBuyIdRequest>({
