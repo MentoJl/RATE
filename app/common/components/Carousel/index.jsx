@@ -18,10 +18,10 @@ const Adds = () => {
         <Image preview={false} src='/Carousel/34.png' height={400} width='100%'></Image>
       </div>
       <div>
-        <Image preview={false} src='/Carousel/11.jpg' height={400} width='100%'></Image>
+        <Image preview={false} src='/Carousel/1.png' height={400} width='100%'></Image>
       </div>
       <div>
-        <Image preview={false} src='/Carousel/35.png' height={400} width='100%'></Image>
+        <Image preview={false} src='/Carousel/0.png' height={400} width='100%'></Image>
       </div>
     </Carousel>
   )

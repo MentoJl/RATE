@@ -23,7 +23,7 @@ import { useGetProductByIdQuery } from "@/app/routes/goodsApi"
 
 const { Title } = Typography
 
-export default function ProductCard({ _id }) {
+export default function ProductCard({ _id, rate }) {
   const [count, setCount] = useState(1)
   const [messageApi, contextHolder] = notification.useNotification()
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -133,7 +133,7 @@ export default function ProductCard({ _id }) {
               <Title level={1}>{item?.data?.title}</Title>
               <Title type="secondary" level={3}>Категорія: {item?.data?.category}</Title>
               <Title type="secondary" level={4}>Теги: {item?.data?.tags?.join(', ')}</Title>
-              <Rate style={{ fontSize: '40px' }} />
+              <Rate style={{ fontSize: '40px' }} value={rate} disabled allowHalf />
               <Title type="danger">{item?.data?.price} {item?.data?.currency}</Title>
               <Button
                 type="primary"

@@ -3,6 +3,7 @@ import { userApi } from "./routes/userApi"
 import { goodsApi } from "./routes/goodsApi"
 import { mailApi } from "./routes/mailApi"
 import { orderApi } from "./routes/orderApi"
+import { commentsApi } from './routes/commentsApi'
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     [goodsApi.reducerPath]: goodsApi.reducer,
     [mailApi.reducerPath]: mailApi.reducer,
     [orderApi.reducerPath]: orderApi.reducer,
+    [commentsApi.reducerPath]: commentsApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -17,4 +19,5 @@ export const store = configureStore({
     .concat(goodsApi.middleware)
     .concat(mailApi.middleware)
     .concat(orderApi.middleware)
+    .concat(commentsApi.middleware)
 })
