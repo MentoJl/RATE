@@ -92,8 +92,51 @@ router.post('/', upload.array('images'), async (req: Request, res: Response) => 
   }
 })
 
-router.patch('/', async (req: Request, res: Response) => {
-  res.status(200).json({ success: true, message: 'ok' })
+router.patch('/', upload.array('images'), async (req: Request, res: Response) => {
+  try {
+    const files = req.files as Express.Multer.File[]
+    const {
+      _id,
+      title,
+      userId,
+      category,
+      price,
+      description,
+      tags: rawTags,
+    } = req.body
+    console.log(req.body)
+
+    if (!_id) {
+      res.status(400).json({ success: false, message: 'ID is required' })
+    }
+
+    const tags = rawTags ? JSON.parse(rawTags) : []
+
+    const updatedFields: any = {
+      title,
+      userId,
+      category,
+      price,
+      description,
+      tags,
+    }
+
+    if (files && files.length > 0) {
+      const newImagePaths = files.map((file) => `/uploads/${file.filename}`)
+      updatedFields.images = newImagePaths
+    }
+
+    const updatedGood = await GoodsSchema.findByIdAndUpdate(_id, updatedFields, { new: true })
+
+    if (!updatedGood) {
+      res.status(404).json({ success: false, message: 'Product not found' })
+    }
+
+    res.status(200).json({ success: true, data: updatedGood })
+  } catch (error) {
+    console.error('PATCH error:', error)
+    res.status(500).json({ success: false, message: 'Internal server error' })
+  }
 })
 
 router.delete('/', async (req: Request, res: Response) => {

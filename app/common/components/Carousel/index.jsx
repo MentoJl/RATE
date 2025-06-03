@@ -12,16 +12,16 @@ const Adds = () => {
       arrows
     >
       <div>
-        <Image preview={false} src='/Carousel/img08.png' height={400} width='100%'></Image>
+        <Image preview={false} src='/Carousel/123.png' height={400} width='100%'></Image>
       </div>
       <div>
-        <Image preview={false} src='/Carousel/img07.png' height={400} width='100%'></Image>
+        <Image preview={false} src='/Carousel/34.png' height={400} width='100%'></Image>
       </div>
       <div>
-        <Image preview={false} src='/Carousel/img09.png' height={400} width='100%'></Image>
+        <Image preview={false} src='/Carousel/11.jpg' height={400} width='100%'></Image>
       </div>
       <div>
-        <Image preview={false} src='/Carousel/img06.png' height={400} width='100%'></Image>
+        <Image preview={false} src='/Carousel/35.png' height={400} width='100%'></Image>
       </div>
     </Carousel>
   )

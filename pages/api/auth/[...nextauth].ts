@@ -23,7 +23,8 @@ const handler = NextAuth({
           email: user?.email,
           name: user?.name,
           password: user.password,
-          role: user?.role
+          role: user?.role,
+          avatar: user?.image || './user/defaultAvatar.png'
         }
       }
     })

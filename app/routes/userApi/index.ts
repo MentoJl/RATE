@@ -20,10 +20,10 @@ export const userApi = createApi({
       }),
     }),
     editUser: builder.mutation({
-      query: ({ _id, email, password, name, role }) => ({
+      query: (formData) => ({
         url: "users",
         method: "PATCH",
-        body: { _id, email, password, name, role },
+        body: formData,
       }),
     }),
     deleteUser: builder.mutation<IUserApiResponse, IDeleteUserApiRequest>({

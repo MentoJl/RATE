@@ -17,17 +17,19 @@ import {
 } from '@ant-design/icons'
 import { useState } from "react"
 import ProductModal from '@/app/common/components/ProductModal'
-import { useCreateGoodsMutation } from "@/app/routes/goodsApi"
+import { useEditGoodsMutation } from "@/app/routes/goodsApi"
 import { useSession } from "next-auth/react"
+import { useGetProductByIdQuery } from "@/app/routes/goodsApi"
 
 const { Title } = Typography
 
-export default function ProductCard({ item }) {
+export default function ProductCard({ _id }) {
   const [count, setCount] = useState(1)
   const [messageApi, contextHolder] = notification.useNotification()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { session } = useSession()
-  const [ createGoods, { isLoading, }] = useCreateGoodsMutation()
+  const [ editGoods, { isEditing, }] = useEditGoodsMutation()
+  const { data: item, isLoading, isError, refetch } = useGetProductByIdQuery({ _id: _id }, { skip: !_id })
   
   const handleAddToCart = (productId) => {
     const cartItems = JSON.parse(localStorage.getItem('cartItems')) || []
@@ -52,22 +54,22 @@ export default function ProductCard({ item }) {
   }
 
   const handleModalOk = async (updatedProduct) => {
-    console.log('Updated product:', updatedProduct)
     const formData = new FormData()
-
+    formData.append('_id', item?.data?._id)
     formData.append('title', updatedProduct?.title)
-    formData.append('userId', session?.user?.id)
+    formData.append('userId', session?.user?._id)
     formData.append('category', updatedProduct?.category)
     formData.append('price', updatedProduct?.price.toString())
     formData.append('description', updatedProduct?.description)
   
     formData.append('tags', JSON.stringify(updatedProduct?.tags))
   
-    updatedProduct?.images?.forEach(file => {
-      formData.append('images', file)
+    updatedProduct?.fileList?.forEach(file => {
+      formData.append('images', file.originFileObj || file)
     })
-    await createGoods({ formData })
+    await editGoods(formData)
     setIsModalOpen(false)
+    refetch()
     messageApi.success({ message: 'Товар оновлено' })
   }
 
@@ -91,9 +93,6 @@ export default function ProductCard({ item }) {
       <Button>• • •</Button>
     </Dropdown>
   )
-
-  console.log(item?.data?.images[0])
-  console.log(item?.data?.image)
 
   return (
     <>

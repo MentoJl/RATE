@@ -1,14 +1,11 @@
 'use client'
 
 import { use } from "react"
-import { useGetProductByIdQuery } from "@/app/routes/goodsApi"
 import { Stack, Grid2, Item } from "@mui/material"
-import { Image, Card, Typography } from 'antd'
 import ProductCard from "@/app/common/components/ProductCard"
 
 export default function ProductPage(props) {
   const { id } = use(props.params)
-  const { data: item, isLoading, isError } = useGetProductByIdQuery({ _id: id }, { skip: !id })
 
   return (
     <Stack
@@ -18,7 +15,7 @@ export default function ProductPage(props) {
         flexGrow: 1,
       }}
     >
-      <ProductCard item={item}/>
+      <ProductCard _id={id}/>
     </Stack>
   )
 }

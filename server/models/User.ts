@@ -5,6 +5,7 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, unique: true, required: false },
   password: String,
   role: { type: String, default: "User", required: true },
+  image: { type: String, default: "./user/image.png" },
 })
 
 const User = mongoose.models.User || mongoose.model("User", UserSchema)

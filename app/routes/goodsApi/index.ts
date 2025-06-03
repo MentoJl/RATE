@@ -38,6 +38,13 @@ export const goodsApi = createApi({
         body: formData,
       }),
     }),
+    editGoods: builder.mutation<any, FormData>({
+      query: (formData) => ({
+        url: 'goods',
+        method: 'PATCH',
+        body: formData,
+      }),
+    }),
     deleteGoods: builder.mutation<IGoodsApiResponse, IGetProductBuyIdRequest>({
       query: ({_id}) => ({
         url: "goods",
@@ -53,5 +60,6 @@ export const {
   useGetProductByIdQuery,
   useCreateGoodsMutation,
   useGetProductByUserQuery,
+  useEditGoodsMutation,
   useDeleteGoodsMutation,
 } = goodsApi

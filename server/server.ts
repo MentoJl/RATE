@@ -28,6 +28,7 @@ async function loadRoutes() {
 }
 
 app.use('/uploads', express.static(path.resolve(__dirname, './uploads')))
+app.use('/uploads', express.static('public/uploads'))
 
 loadRoutes().then(() => {
   app.listen(PORT, () => {
