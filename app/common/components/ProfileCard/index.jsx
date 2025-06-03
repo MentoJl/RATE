@@ -23,6 +23,7 @@ const ProfileCard = () => {
   const [previewImage, setPreviewImage] = useState(session?.user?.avatar)
   const [previewOpen, setPreviewOpen] = useState(false)
   const [editUser, { isLoading, isError }] = useEditUserMutation()
+  console.log(session?.user)
 
   const uploadButton = (
     <div
@@ -34,7 +35,7 @@ const ProfileCard = () => {
       }}
     >
       <img
-        src={session?.user?.avatar || '/user/image.png'}
+        src={session?.user?.avatar || '/user/defaultAvatar.png'}
         alt="avatar"
         style={{
           width: '100%',
@@ -61,7 +62,6 @@ const ProfileCard = () => {
     </div>
   )
 
-
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
       file.preview = await new Promise((resolve) => {
@@ -77,9 +77,8 @@ const ProfileCard = () => {
   const handleChange = ({ fileList: newFileList }) => {
     setFileList(newFileList)
     const file = newFileList?.[0]?.originFileObj
-    if (file) setAvatar(file) // ← это уже для handleEditUser
+    if (file) setAvatar(file)
   }
-
 
   const handleEditUser = async () => {
     if (!getEmailRegex().test(email?.current?.value)) {
@@ -121,7 +120,6 @@ const ProfileCard = () => {
       message.error("Сталася помилка при редагуванні")
     }
   }
-
 
   const handleLogout = () => {
     signOut({
@@ -238,7 +236,7 @@ const ProfileCard = () => {
             </>
           ) : (
             <Image
-              src={session?.user?.avatar || './user/image.png'}
+              src={session?.user?.avatar || './user/defaultAvatar.png'}
               width={240}
               height={240}
               style={{ borderRadius: '50%', objectFit: 'cover' }}

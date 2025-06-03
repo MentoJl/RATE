@@ -24,7 +24,7 @@ const handler = NextAuth({
           name: user?.name,
           password: user.password,
           role: user?.role,
-          avatar: user?.image || './user/defaultAvatar.png'
+          avatar: user?.image ?? './user/defaultAvatar.png'
         }
       }
     })

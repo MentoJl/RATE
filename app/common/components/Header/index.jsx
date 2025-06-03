@@ -10,10 +10,11 @@ import {
   UserOutlined
 } from '@ant-design/icons'
 import { usePathname } from "next/navigation"
-import { Popover, Input, Image } from 'antd'
+import { Popover, Input, Image, Modal } from 'antd'
 import { useRouter } from 'next/navigation'
 import { useSession } from "next-auth/react"
 import '@ant-design/v5-patch-for-react-19'
+import CartCard from '@/app/common/components/CartCard'
 
 const Header = () => {
 
@@ -23,6 +24,7 @@ const Header = () => {
   const [searchPopoverIsOpen, setSearchPopoverIsOpen] = useState(false)
   const { Search } = Input
   const [isScrolled, setIsScrolled] = useState(false)
+  const [isCartModalOpen, setIsCartModalOpen] = useState(false)
   const [page, setPage] = useState(0)
 
   useEffect(() => {
@@ -64,6 +66,10 @@ const Header = () => {
   const handleRouteToMainPage = () => {
     setPage(0)
     router.push('/')
+  }
+
+  const handleOpenCartModal = () => {
+    setIsCartModalOpen(true)
   }
 
   if (pathname === '/login') {
@@ -166,8 +172,9 @@ const Header = () => {
             <Tab
               label={useMediaQuery('(min-width:1001px)') ? "Кошик" : ''}
               icon={<ShoppingCartOutlined style={{ fontSize: "20px" }} />}
-              iconPosition='start' />
-            {/* <Tab label='About us' icon={<ReadOutlined style={{ fontSize: "20px" }} />} iconPosition='start' /> */}
+              iconPosition='start'
+              onClick={handleOpenCartModal}
+            />
             <Tab
               label={useMediaQuery('(min-width:1001px)') ? "Зворотній зв`язок" : ''}
               icon={<UserSwitchOutlined style={{ fontSize: "20px" }} />}
@@ -184,6 +191,14 @@ const Header = () => {
         </Box>
       </Box>
       <div style={{ height: '55px' }}></div>
+      <Modal
+        open={isCartModalOpen}
+        onCancel={() => setIsCartModalOpen(false)}
+        footer={null}
+        width={600}
+      >
+        <CartCard />
+      </Modal>
     </div>
   )
 }

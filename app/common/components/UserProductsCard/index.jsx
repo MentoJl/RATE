@@ -171,26 +171,35 @@ export default function UserProductsCard() {
   )
 
   return (
-    <Card title="МОЇ ТОВАРИ" hoverable extra={DropMenu}>
+    <Card title="МОЇ ТОВАРИ" hoverable>
       {contextHolder}
-      <Table
-        rowKey={(record) => record._id}
-        columns={columns}
-        dataSource={products}
-        pagination={{ pageSize: 5 }}
-        rowSelection={{
-          selectedRowKeys,
-          onChange: setSelectedRowKeys,
-        }}
-        locale={{ emptyText: 'Поки немає власних товарів' }}
-      />
-      <ProductModal
-        create={true}
-        visible={isModalOpen}
-        onSave={handleConfirmModal}
-        onCancel={handleCancelModal}
-        product={[]}
-      />
+      {session?.user?.role !== 'User' ? (
+        <>
+          {DropMenu}
+          <Table
+            rowKey={(record) => record._id}
+            columns={columns}
+            dataSource={products}
+            pagination={{ pageSize: 5 }}
+            rowSelection={{
+              selectedRowKeys,
+              onChange: setSelectedRowKeys,
+            }}
+            locale={{ emptyText: 'Поки немає власних товарів' }}
+          />
+          <ProductModal
+            create={true}
+            visible={isModalOpen}
+            onSave={handleConfirmModal}
+            onCancel={handleCancelModal}
+            product={[]}
+          />
+        </>
+      ) : (
+        <div style={{ padding: '1rem', fontSize: '16px' }}>
+          Для цієї функції необхідно мати статус продавця
+        </div>
+      )}
     </Card>
   )
 }
