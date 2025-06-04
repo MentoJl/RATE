@@ -61,7 +61,6 @@ export default function ProductModal({
       }
       onSave(updatedProduct)
     }).catch(info => {
-      console.log('Validate Failed:', info)
       message.error('Будь ласка, заповніть усі обовʼязкові поля.')
     })
   }

@@ -9,7 +9,6 @@ import { Splitter } from 'antd'
 import { useSession } from 'next-auth/react'
 import { Session } from 'next-auth'
 
-// Extend the Session type to include the role property
 declare module 'next-auth' {
   interface Session {
     user?: {

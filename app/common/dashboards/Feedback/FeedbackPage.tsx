@@ -118,9 +118,6 @@ const FeedbackPage = () => {
         message.error(`Помилка при завантажені файлу.`)
       }
     },
-    onDrop(e) {
-      console.log('Dropped files', e.dataTransfer.files)
-    },
   }
 
   return (
@@ -145,7 +142,6 @@ const FeedbackPage = () => {
         >
           <TextField
             variant="standard"
-            // label="Пошта"
             placeholder='Моя пошта'
             inputRef={emailRef}
             error={emailError ? true : false}
@@ -195,7 +191,6 @@ const FeedbackPage = () => {
             />
             <TextField
               variant="standard"
-              // label="Пошта"
               placeholder='Тема листа'
               inputRef={themeRef}
               error={themeError ? true : false}
@@ -229,7 +224,6 @@ const FeedbackPage = () => {
           >
             <TextField
               variant="outlined"
-              // label="Пошта"
               multiline
               placeholder='Опис листа'
               inputRef={descriptionRef}

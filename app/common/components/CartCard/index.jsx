@@ -15,7 +15,6 @@ const CartCard = () => {
 
   useEffect(() => {
     const items = JSON.parse(localStorage.getItem('cartItems')) || []
-    console.log(items)
     const itemsWithId = items.map((item, idx) => ({
       ...item,
       id: item.productId || `item-${idx}`,

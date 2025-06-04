@@ -29,7 +29,6 @@ const Header = () => {
 
   useEffect(() => {
     const cleanPath = pathname.split('?')[0]
-    console.log('Current Path:', cleanPath)
     switch (cleanPath) {
       case '/':
         setPage(0)

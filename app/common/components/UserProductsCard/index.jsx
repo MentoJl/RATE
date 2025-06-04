@@ -41,7 +41,6 @@ export default function UserProductsCard() {
 
   const handleDeleteProductFromCart = async () => {
     try {
-      console.log(selectedRowKeys)
       await Promise.all(selectedRowKeys.map((_id) => deleteGoods({_id}).unwrap()))
       messageApi.success({
         message: 'Товари успішно видалені',
@@ -58,7 +57,6 @@ export default function UserProductsCard() {
   }
 
   const handleConfirmModal = async (newProduct) => {
-    console.log('Updated product:', newProduct)
     try {
       const formData = new FormData()
 

@@ -104,7 +104,6 @@ router.patch('/', upload.array('images'), async (req: Request, res: Response) =>
       description,
       tags: rawTags,
     } = req.body
-    console.log(req.body)
 
     if (!_id) {
       res.status(400).json({ success: false, message: 'ID is required' })
@@ -142,7 +141,6 @@ router.patch('/', upload.array('images'), async (req: Request, res: Response) =>
 router.delete('/', async (req: Request, res: Response) => {
   try {
     const { _id } = req.body
-    console.log("id", _id)
     const item = await GoodsSchema.findByIdAndDelete(_id)
 
     res.json({ success: true, data: item })

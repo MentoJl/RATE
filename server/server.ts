@@ -1,6 +1,5 @@
 import express, { Express } from 'express'
 import cors from 'cors'
-// import { createProxyMiddleware } from 'http-proxy-middleware'
 import fs from 'fs'
 import path from 'path'
 

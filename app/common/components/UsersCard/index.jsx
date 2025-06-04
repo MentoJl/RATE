@@ -23,7 +23,6 @@ const UsersCard = () => {
       setSelectedIds([])
       refetch()
     } catch (err) {
-      console.log(err)
       message.error("Сталася помилка при видаленні")
     }
   }

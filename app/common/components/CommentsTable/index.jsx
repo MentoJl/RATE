@@ -42,7 +42,6 @@ const CommentsTable = ({ productId, setAvarageRate }) => {
       setRate(null)
       refetch()
     } catch (err) {
-      console.log(err)
       message.error('Помилка при збережені відгуку.')
     }
   }

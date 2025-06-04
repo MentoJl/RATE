@@ -23,7 +23,6 @@ const ProfileCard = () => {
   const [previewImage, setPreviewImage] = useState(session?.user?.avatar)
   const [previewOpen, setPreviewOpen] = useState(false)
   const [editUser, { isLoading, isError }] = useEditUserMutation()
-  console.log(session?.user)
 
   const uploadButton = (
     <div
