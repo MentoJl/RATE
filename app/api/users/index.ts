@@ -60,6 +60,37 @@ router.patch('/', upload.single('image'), async (req: Request, res: Response) =>
   }
 })
 
+router.post('/', async (req: Request, res: Response) => {
+  try {
+    const { email, password, name, role } = req.body
+
+    if (!email) {
+      res.status(400).json({ message: 'Необхідний Email' })
+      return
+    }
+
+    const existingUser = await UsersSchema.findOne({ email })
+
+    if (existingUser) {
+      res.status(409).json({ success: false,  message: 'Користувач з таким email вже існує' })
+      return
+    }
+
+    const newUser = new UsersSchema({
+      name,
+      email,
+      password,
+      role,
+    })
+
+    await newUser.save()
+
+    res.status(200).json({ success: true, message: 'Користувач успішно створений' })
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Сталася помилка при створенні користувача' })
+  }
+})
+
 router.delete('/', async (req: Request, res: Response) => {
   const { _id } = req.body
 

@@ -141,7 +141,8 @@ router.patch('/', upload.array('images'), async (req: Request, res: Response) =>
 
 router.delete('/', async (req: Request, res: Response) => {
   try {
-    const { _id } = req.params
+    const { _id } = req.body
+    console.log("id", _id)
     const item = await GoodsSchema.findByIdAndDelete(_id)
 
     res.json({ success: true, data: item })

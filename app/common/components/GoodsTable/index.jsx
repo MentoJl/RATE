@@ -41,7 +41,7 @@ const GoodsTable = () => {
   return (
     <Box
       sx={{
-        width: '100%',
+        width: '80%',
         px: 4,
         py: 4,
         borderRadius: 4,

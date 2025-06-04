@@ -41,7 +41,8 @@ export default function UserProductsCard() {
 
   const handleDeleteProductFromCart = async () => {
     try {
-      // await Promise.all(selectedRowKeys.map((_id) => deleteGoods({_id}).unwrap()))
+      console.log(selectedRowKeys)
+      await Promise.all(selectedRowKeys.map((_id) => deleteGoods({_id}).unwrap()))
       messageApi.success({
         message: 'Товари успішно видалені',
         duration: 2,
@@ -58,24 +59,32 @@ export default function UserProductsCard() {
 
   const handleConfirmModal = async (newProduct) => {
     console.log('Updated product:', newProduct)
-    const formData = new FormData()
+    try {
+      const formData = new FormData()
 
-    formData.append('title', newProduct?.title)
-    formData.append('userId', session?.user?.id)
-    formData.append('category', newProduct?.category)
-    formData.append('price', newProduct?.price.toString())
-    formData.append('description', newProduct?.description)
-  
-    formData.append('tags', JSON.stringify(newProduct?.tags))
-  
-    newProduct?.fileList?.forEach(file => {
-      formData.append('images', file.originFileObj || file)
-    })
-    await createGoods(formData)
-    messageApi.success({
-      message: 'Товар успішно додано',
-      duration: 2,
-    })
+      formData.append('title', newProduct?.title)
+      formData.append('userId', session?.user?.id)
+      formData.append('category', newProduct?.category)
+      formData.append('price', newProduct?.price.toString())
+      formData.append('description', newProduct?.description)
+    
+      formData.append('tags', JSON.stringify(newProduct?.tags))
+    
+      newProduct?.fileList?.forEach(file => {
+        formData.append('images', file.originFileObj || file)
+      })
+      await createGoods(formData)
+      messageApi.success({
+        message: 'Товар успішно додано',
+        duration: 2,
+      })
+      refetch()
+    } catch (err) {
+      messageApi.error({
+        message: 'Сталася помилка',
+        duration: 2,
+      })
+    }
     setIsModalOpen(false)
   }
 
@@ -171,11 +180,14 @@ export default function UserProductsCard() {
   )
 
   return (
-    <Card title="МОЇ ТОВАРИ" hoverable>
+    <Card 
+      title="МОЇ ТОВАРИ" 
+      hoverable
+      extra={DropMenu}
+    >
       {contextHolder}
       {session?.user?.role !== 'User' ? (
         <>
-          {DropMenu}
           <Table
             rowKey={(record) => record._id}
             columns={columns}
