@@ -1,9 +1,41 @@
+'use client'
+
 import React, { useState, useEffect } from 'react'
-import { Card, Image, Button, Dropdown, Modal, Table, Popconfirm, Form, Input } from 'antd'
+import {
+  Card,
+  Image,
+  Button,
+  Dropdown,
+  Modal,
+  Table,
+  Popconfirm,
+  Form,
+  Input,
+  message,
+} from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 import { Stack } from '@mui/material'
 import { useCreateOrderMutation } from '@/app/routes/orderApi'
 import { useSession } from 'next-auth/react'
+import { useCreatePaymentMutation } from '@/app/routes/paymentApi'
+import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js'
+
+const CARD_ELEMENT_OPTIONS = {
+  style: {
+    base: {
+      fontSize: '16px',
+      color: '#424770',
+      '::placeholder': {
+        color: '#aab7c4',
+      },
+      fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+      padding: '10px 12px',
+    },
+    invalid: {
+      color: '#9e2146',
+    },
+  },
+}
 
 const CartCard = () => {
   const [cartItems, setCartItems] = useState([])
@@ -12,6 +44,11 @@ const CartCard = () => {
   const { data: session } = useSession()
   const [createOrder] = useCreateOrderMutation()
   const [form] = Form.useForm()
+  const [createPayment, { isLoading: isCreating }] = useCreatePaymentMutation()
+  const stripe = useStripe()
+  const elements = useElements()
+  const [loading, setLoading] = useState(false)
+  const [cardError, setCardError] = useState(null)
 
   useEffect(() => {
     const items = JSON.parse(localStorage.getItem('cartItems')) || []
@@ -107,34 +144,93 @@ const CartCard = () => {
     </Dropdown>
   )
 
+  const totalSum = cartItems.reduce((total, item) => total + item.totalPrice, 0)
+
   const handleCreateOrder = async () => {
     try {
+      setLoading(true)
       const values = await form.validateFields()
 
-      const goods = cartItems.map(item => ({
-        productId: item.productId,
-        quantity: item.quantity,
-        price: item.price,
-      }))
+      if (!stripe || !elements) {
+        message.error('Stripe не завантажився, спробуйте пізніше')
+        setLoading(false)
+        return
+      }
 
-      const totalSum = cartItems.reduce((total, item) => total + item.quantity * item.price, 0)
+      if (cardError) {
+        message.error('Помилка в даних карти: ' + cardError)
+        setLoading(false)
+        return
+      }
 
-      await createOrder({
+      const res = await createPayment({
+        amount: Math.round(totalSum),
+        currency: 'usd',
         userId: session?.user?.id,
-        goods,
-        price: totalSum,
-        ...values, // name, phone, address
-      }).unwrap()
+      })
+      const { clientSecret } = await res?.data
 
-      alert('Замовлення оформлено!')
-      localStorage.removeItem('cartItems')
-      setCartItems([])
-      setSelectedRowKeys([])
-      setIsModalOpen(false)
-      form.resetFields()
+      if (!clientSecret) {
+        message.error('Помилка створення платежу')
+        setLoading(false)
+        return
+      }
+
+      const cardElement = elements.getElement(CardElement)
+      if (!cardElement) {
+        message.error('Карта не заповнена')
+        setLoading(false)
+        return
+      }
+
+      const paymentResult = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            name: values.name,
+            email: session?.user?.email || '',
+            phone: values.phone,
+            address: {
+              line1: values.address,
+            },
+          },
+        },
+      })
+
+      if (paymentResult.error) {
+        message.error(paymentResult.error.message || 'Оплата не пройшла')
+        setLoading(false)
+        return
+      }
+
+      if (paymentResult.paymentIntent.status === 'succeeded') {
+        const goods = cartItems.map(item => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          price: item.price,
+        }))
+
+        await createOrder({
+          userId: session?.user?.id,
+          goods,
+          price: totalSum,
+          ...values,
+        }).unwrap()
+
+        message.success('Замовлення оформлено!')
+        localStorage.removeItem('cartItems')
+        setCartItems([])
+        setSelectedRowKeys([])
+        setIsModalOpen(false)
+        form.resetFields()
+      } else {
+        message.error('Оплата не вдалася')
+      }
     } catch (err) {
       console.error('Помилка при оформленні замовлення:', err)
-      alert('Щось пішло не так. Спробуйте ще раз.')
+      message.error('Щось пішло не так. Спробуйте ще раз.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -152,8 +248,8 @@ const CartCard = () => {
         locale={{ emptyText: 'Кошик пустий' }}
       />
       <Stack spacing={2} style={{ marginTop: 16 }}>
-        <h3>Загальна сума: {cartItems.reduce((total, item) => total + item.totalPrice, 0)} USD</h3>
-        <Button type="primary" size="large" style={{ width: '100%' }} onClick={() => setIsModalOpen(true)}>
+        <h3>Загальна сума: {totalSum} USD</h3>
+        <Button type="primary" size="large" style={{ width: '100%' }} onClick={() => setIsModalOpen(true)} disabled={cartItems.length === 0}>
           Оформити замовлення
         </Button>
       </Stack>
@@ -165,6 +261,7 @@ const CartCard = () => {
         onOk={handleCreateOrder}
         okText="Підтвердити"
         cancelText="Відмінити"
+        confirmLoading={loading}
       >
         <Form form={form} layout="vertical">
           <Form.Item
@@ -187,6 +284,16 @@ const CartCard = () => {
             rules={[{ required: true, message: 'Введіть адресу доставки' }]}
           >
             <Input.TextArea placeholder="Місто, вулиця, будинок, квартира" rows={3} />
+          </Form.Item>
+          <Form.Item label="Оплата картою" validateStatus={cardError ? 'error' : ''} help={cardError || ''}>
+            <div style={{ border: '1px solid #d9d9d9', padding: '10px', borderRadius: 4 }}>
+              <CardElement
+                options={CARD_ELEMENT_OPTIONS}
+                onChange={(event) => {
+                  setCardError(event.error ? event.error.message : null)
+                }}
+              />
+            </div>
           </Form.Item>
         </Form>
       </Modal>

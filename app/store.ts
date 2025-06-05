@@ -4,6 +4,7 @@ import { goodsApi } from "./routes/goodsApi"
 import { mailApi } from "./routes/mailApi"
 import { orderApi } from "./routes/orderApi"
 import { commentsApi } from './routes/commentsApi'
+import { paymentApi } from "./routes/paymentApi"
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     [mailApi.reducerPath]: mailApi.reducer,
     [orderApi.reducerPath]: orderApi.reducer,
     [commentsApi.reducerPath]: commentsApi.reducer,
+    [paymentApi.reducerPath]: paymentApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -20,4 +22,5 @@ export const store = configureStore({
     .concat(mailApi.middleware)
     .concat(orderApi.middleware)
     .concat(commentsApi.middleware)
+    .concat(paymentApi.middleware)
 })
