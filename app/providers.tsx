@@ -5,6 +5,7 @@ import { Provider as ReduxProvider } from 'react-redux'
 import { store } from '@/app/store'
 import { SessionProvider } from 'next-auth/react'
 import Header from '@/app/common/components/Header'
+import CustomFooter from '@/app/common/components/Footer'
 import PageSkeleton from '@/app/common/components/PageSkeleton'
 import { FloatButton } from 'antd'
 import { Elements } from '@stripe/react-stripe-js'
@@ -20,6 +21,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           <PageSkeleton />
           <Header />
           {children}
+          <CustomFooter/>
           <FloatButton.BackTop />
         </Elements>
       </SessionProvider>
