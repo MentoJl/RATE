@@ -1,10 +1,17 @@
-import React from "react";
-import { Layout, Row, Col, Typography, Space } from "antd";
+import React from "react"
+import { Layout, Row, Col, Typography, Space } from "antd"
+import { usePathname } from "next/navigation"
 
 const { Footer } = Layout;
 const { Title, Text, Link } = Typography;
 
 const CustomFooter = () => {
+  const pathname = usePathname()
+
+  if (pathname === '/login' || pathname === '/feedback') {
+    return null
+  }
+
   return (
     <Footer
       style={{
