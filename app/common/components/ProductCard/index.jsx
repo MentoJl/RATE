@@ -124,7 +124,7 @@ export default function ProductCard({ _id, rate }) {
               alt={item?.data?.title}
               width={400}
               height={400}
-              preview={false}
+              // preview={false}
               style={{ objectFit: 'contain' }}
             />
           </Grid>

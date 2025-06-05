@@ -23,11 +23,33 @@ const upload = multer({ storage })
 
 router.get('/', async (req: Request, res: Response) => {
   try {
-    const { search = '' } = req.query
-    
-    const filter = search
-      ? { title: { $regex: search, $options: 'i' } }
-      : {}
+    const {
+      search,
+      category,
+      price,
+      productType,
+    } = req.query
+
+    const filter: any = {}
+
+    if (search !== '') {
+      filter.title = { $regex: search, $options: 'i' }
+    }
+
+    if (category != 'null' && category !== '') {
+      filter.category = category
+    }
+
+    if (price != 'null' && price !== '') {
+      const parsedPrice = parseFloat(price as string)
+      if (!isNaN(parsedPrice)) {
+        filter.price = { $lte: parsedPrice }
+      }
+    }
+
+    if (productType != 'null' && productType !== '') {
+      filter.verified = productType === 'true'
+    }
 
     const items = await GoodsSchema.find(filter)
 

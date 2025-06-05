@@ -5,7 +5,6 @@ import GoodsTable from '@/app/common/components/GoodsTable'
 import Searcher from '@/app/common/components/Searcher'
 import StoreFilters from '@/app/common/components/StoreFilters'
 import { Box } from '@mui/material'
-import { Filter } from '@mui/icons-material'
 import FilterContext from '@/app/common/dashboards/Catalog/FilterContext'
 import '@ant-design/v5-patch-for-react-19'
 
@@ -16,7 +15,6 @@ const CatalogPage = () => {
   const [tagValue, setTagValue] = useState(null)
   const [priceValue, setPriceValue] = useState(null)
   const [productType, setProductType] = useState(null)
-
   return (
     <Box sx={{
       width: "100%",

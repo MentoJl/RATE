@@ -1,10 +1,21 @@
-import React from "react";
+'use client'
+
+import React, { useState } from "react";
 import { Card } from "antd";
-import { useState } from "react";
 import { Typography } from "@mui/material";
 
-const Category = ({title, catalog, imgSrc}) => {
-  const [hovered, setHovered] = useState(false);
+const Category = ({ title, catalog, imgSrc, onSelect }) => {
+  const [hovered, setHovered] = useState(false)
+
+  const getDefaultCategories = () => {
+    switch(title) {
+      case 'ЇЖА': return 'FOOD'; break;
+      case 'ОДЯГ': return 'CLOTHES'; break;
+      case 'ДОМАШНІ': return 'HOMEMADE'; break;
+      case 'СПОРТ': return 'SPORT'; break;
+      case 'ЕЛЕКТРОНІКА': return 'ELECTRONICS'; break;
+    }
+  }
 
   return (
     <Card
@@ -25,6 +36,7 @@ const Category = ({title, catalog, imgSrc}) => {
         alignItems: 'center',
         justifyContent: 'center',
       }}
+      onClick={() => onSelect(getDefaultCategories())}
     >
       <div
         style={{
@@ -51,7 +63,7 @@ const Category = ({title, catalog, imgSrc}) => {
           transition: 'transform 0.9s ease, opacity 0.9s ease, color 0.5s ease',
         }}
       >
-      {title}
+        {title}
       </Typography>
       <Typography
         style={{
@@ -67,12 +79,14 @@ const Category = ({title, catalog, imgSrc}) => {
       >
         {catalog?.map((item, index) => (
           <React.Fragment key={index}>
-            • {item} <br />
+            <span>
+              • {item} <br />
+            </span>
           </React.Fragment>
         ))}
       </Typography>
     </Card>
-  );
+  )
 }
 
-export default Category;
+export default Category

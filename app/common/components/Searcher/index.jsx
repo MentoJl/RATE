@@ -1,5 +1,5 @@
 import debounce from 'lodash.debounce'
-import React, { useCallback, useContext } from 'react'
+import React, { useCallback, useContext, useEffect } from 'react'
 import { TextField, Stack } from '@mui/material'
 import { useSearchParams } from 'next/navigation'
 import SearchIcon from '@mui/icons-material/Search'
@@ -10,6 +10,9 @@ const Searcher = () => {
   const searchParams = useSearchParams()
 
   const searchBy = searchParams.get('searchBy') || ''
+  useEffect(() => {
+    setSearchValue(searchBy)
+  }, [searchParams])
 
   const debouncedSetSearchValue = useCallback(
     debounce((val) => {

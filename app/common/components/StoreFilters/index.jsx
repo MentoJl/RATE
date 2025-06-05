@@ -1,7 +1,8 @@
 'use client'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { Box, Typography, Stack, FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 import FilterContext from '@/app/common/dashboards/Catalog/FilterContext'
+import { useSearchParams } from 'next/navigation'
 
 const StoreFilters = () => {
   const {
@@ -10,6 +11,13 @@ const StoreFilters = () => {
     setPriceValue,
     setProductType
   } = useContext(FilterContext)
+  const searchParams = useSearchParams()
+
+  const searchBy = searchParams.get('category') || ''
+  console.log(searchBy)
+  useEffect(() => {
+    setCategoryValue(searchBy)
+  }, [searchParams])
 
   return (
     <Box
@@ -33,14 +41,15 @@ const StoreFilters = () => {
         <InputLabel id="category-label">Категорія</InputLabel>
         <Select
           labelId="category-label"
-          defaultValue=""
+          defaultValue={searchBy}
           onChange={(e) => setCategoryValue(e.target.value)}
           label="Категорія"
         >
           <MenuItem value="">Всі</MenuItem>
-          <MenuItem value="clothes">Одяг</MenuItem>
-          <MenuItem value="shoes">Взуття</MenuItem>
-          <MenuItem value="accessories">Аксесуари</MenuItem>
+          <MenuItem value="FOOD">Їжа</MenuItem>
+          <MenuItem value="HOMEMADE">Домашні</MenuItem>
+          <MenuItem value="SPORT">Спорт</MenuItem>
+          <MenuItem value="ELECTRONICS">Електроніка</MenuItem>
         </Select>
       </FormControl>
 
@@ -68,8 +77,8 @@ const StoreFilters = () => {
           label="Тип товару"
         >
           <MenuItem value="">Всі</MenuItem>
-          <MenuItem value="NonVerificated">Не Верифіковані</MenuItem>
-          <MenuItem value="Verificated">Верифіковані</MenuItem>
+          <MenuItem value={false}>Не Верифіковані</MenuItem>
+          <MenuItem value={true}>Верифіковані</MenuItem>
         </Select>
       </FormControl>
     </Box>

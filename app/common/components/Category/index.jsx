@@ -1,62 +1,73 @@
+'use client'
+
 import React from 'react'
+import { useRouter } from 'next/navigation'
 import Category from '../CategoryCard'
-import { Typography } from 'antd'
-import { Col, Row } from 'antd'
+import { Typography, Row, Col, Space } from 'antd'
 import styles from './styles.module.scss'
-import { Space } from 'antd'
 
 const Categories = () => {
+  const router = useRouter()
+  const { Title } = Typography
 
-    const food = ['Fruits', 'Vegetables', 'Drinks', 'Sweets']
-    const clothes = ["Women's", "Men's", "Children's"]
-    const homemade = ['Furniture', 'Decor', 'Appliances']
-    const sport = ['Bicycles', 'Simulators', 'Sportswear']
-    const electronics = ['Smartphones', 'Tablets', 'Headphones', 'Accessories']
-    const { Title } = Typography
+  const food = ['Фрукти', 'Овочі', 'Напої', 'Солодощі']
+  const clothes = ['Жіночий одяг', 'Чоловічий одяг', 'Дитячий одяг']
+  const homemade = ['Меблі', 'Декор', 'Побутова техніка']
+  const sport = ['Велосипеди', 'Тренажери', 'Спортивний одяг']
+  const electronics = ['Смартфони', 'Планшети', 'Навушники', 'Аксесуари']
 
-    return (
-        <>
-            <Row className={styles.categoriesRow}>
-                <Title
-                    italic={true}
-                    style={{ fontStyle: 'italic' }}
-                    level={1}
-                >
-                    Categories
-                </Title>
-            </Row>
-            <Row className={styles.categoriesRow}>
-                <Space size={80}>
-                    <Category 
-                        title='FOOD'
-                        catalog={food}
-                        imgSrc='/CategoriesCards/food.jpg'
-                        
-                    />
-                    <Category 
-                        title='CLOTHES'
-                        catalog={clothes}
-                        imgSrc='/CategoriesCards/clothes.png'
-                    />
-                    <Category 
-                        title='HOMEMADE'
-                        catalog={homemade}
-                        imgSrc='/CategoriesCards/homemade.jpg'
-                    />
-                    <Category 
-                        title='SPORT'
-                        catalog={sport}
-                        imgSrc='/CategoriesCards/sport.jpg'
-                    />
-                    <Category 
-                        title='ELECTRONICS'
-                        catalog={electronics}
-                        imgSrc='/CategoriesCards/electro.jpg'
-                    />
-                </Space>
-            </Row>
-        </>
-    );
+  const handleSearch = (category) => {
+    if (category) {
+      const encodedCategory = encodeURIComponent(category)
+      router.push(`/catalog?category=${encodedCategory}`)
+    } else {
+      router.push('/catalog')
+    }
+  }
+
+  return (
+    <>
+      <Row className={styles.categoriesRow}>
+        <Title italic={true} level={1}>
+          Категорії
+        </Title>
+      </Row>
+      <Row className={styles.categoriesRow}>
+        <Space size={80}>
+          <Category
+            title='ЇЖА'
+            catalog={food}
+            imgSrc='/CategoriesCards/food.jpg'
+            onSelect={handleSearch}
+          />
+          <Category
+            title='ОДЯГ'
+            catalog={clothes}
+            imgSrc='/CategoriesCards/clothes.png'
+            onSelect={handleSearch}
+          />
+          <Category
+            title='ДОМАШНІ'
+            catalog={homemade}
+            imgSrc='/CategoriesCards/homemade.jpg'
+            onSelect={handleSearch}
+          />
+          <Category
+            title='СПОРТ'
+            catalog={sport}
+            imgSrc='/CategoriesCards/sport.jpg'
+            onSelect={handleSearch}
+          />
+          <Category
+            title='ЕЛЕКТРОНІКА'
+            catalog={electronics}
+            imgSrc='/CategoriesCards/electro.jpg'
+            onSelect={handleSearch}
+          />
+        </Space>
+      </Row>
+    </>
+  )
 }
 
 export default Categories
