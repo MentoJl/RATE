@@ -12,7 +12,7 @@ const Adds = () => {
       arrows
     >
       <div>
-        <Image preview={false} src='/Carousel/123.png' height={400} width='100%'></Image>
+        <Image preview={false} src='/Carousel/img06.png' height={400} width='100%'></Image>
       </div>
       <div>
         <Image preview={false} src='/Carousel/img09.png' height={400} width='100%'></Image>

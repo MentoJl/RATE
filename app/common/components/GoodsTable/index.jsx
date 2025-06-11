@@ -22,7 +22,6 @@ const GoodsTable = () => {
   const itemsPerPage = 10
   const [createGoods] = useCreateGoodsMutation()
   const { searchValue, categoryValue, priceValue, productType } = useContext(FilterContext)
-  console.log(searchValue)
 
   const { data, isLoading, isError } = useGetAllGoodsQuery({
     search: searchValue,

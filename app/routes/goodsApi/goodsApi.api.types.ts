@@ -14,13 +14,13 @@ export interface ICreateGoodsApiRequest {
 
 export interface ICreateGoodsFormData {
   title: string
-  userId: ObjectId // ObjectId в виде строки
-  tags: string[] // может быть сериализован в JSON
+  userId: ObjectId
+  tags: string[] 
   category: string
   price: number
   currency: string
   description: string
-  images: File[] // массив файлов
+  images: File[]
 }
 
 export interface IUploadFile {
@@ -45,6 +45,7 @@ export interface IGetGoodsApiRequest {
   category: string,
   price: number,
   productType: string,
+  name: string
 }
 
 export interface IGoodsApiResponse {
